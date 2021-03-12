@@ -33,7 +33,7 @@ class _UserHomeState extends State<UserHome> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
+    Map<MarkerId, Marker> markers = {};
     return Scaffold(
       body: Container(
         height: height,
@@ -41,24 +41,56 @@ class _UserHomeState extends State<UserHome> {
         child: Scaffold(
           body: Stack(
             children: <Widget>[
-              GoogleMap(
-                initialCameraPosition: userHomeBloc.initialLocation,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                mapType: MapType.normal,
-                zoomGesturesEnabled: true,
-                zoomControlsEnabled: true,
-                scrollGesturesEnabled: true,
-                markers: Set<Marker>.of(userHomeBloc.markers.values),
-                // tiltGesturesEnabled: ,
-                onMapCreated: (GoogleMapController controller) {
-                  userHomeBloc.locatePosition();
-                  if (!userHomeBloc.controllerGoogleMap.isCompleted) {
-                    userHomeBloc.controllerGoogleMap.complete(controller);
-                    userHomeBloc.mapController = controller;
-                  }
-                },
-              ),
+              StreamBuilder<Map<MarkerId, Marker>>(
+                  stream: userHomeBloc.getMarkers$,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // userHomeBloc.markers..map((x) {
+                      //   print(x);
+                      // });
+                      userHomeBloc.markers.forEach((e) {
+                        markers.addAll(e);
+                        print(markers.values);
+                        print(markers.length);
+                        // e.forEach((s) {
+                        //   s.value;
+                        // });
+                      });
+                      if (markers.length > 1) {
+                        userHomeBloc.moveToMarker();
+                      }
+
+                      // snapshot.data.entries;
+                      // print(snapshot.data.length);
+                      // userHomeBloc.markers.map((data) {
+                      //   print('mapping');
+                      //   print(data.values);
+                      //   markers = data;
+                      // });
+                      return GoogleMap(
+                        initialCameraPosition: userHomeBloc.initialLocation,
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: false,
+                        mapType: MapType.normal,
+                        zoomGesturesEnabled: true,
+                        zoomControlsEnabled: true,
+                        scrollGesturesEnabled: true,
+                        markers: Set<Marker>.of(markers.values),
+                        // tiltGesturesEnabled: ,
+                        onMapCreated: (GoogleMapController controller) {
+                          // userHomeBloc.locatePosition();
+                          userHomeBloc.mapController = controller;
+                          if (!userHomeBloc.controllerGoogleMap.isCompleted) {
+                            userHomeBloc.controllerGoogleMap
+                                .complete(controller);
+                            // userHomeBloc.cameraGoToInitialAddress();
+                          }
+                          print('move to marker');
+                        },
+                      );
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  }),
               Positioned(
                 width: MediaQuery.of(context).size.width,
                 // height: 100,
@@ -72,13 +104,12 @@ class _UserHomeState extends State<UserHome> {
                       RaisedButton(
                         child: Text('+ Markers'),
                         onPressed: () {
-                          setState(() {
-                            userHomeBloc.addMarker(
-                                LatLng(mainLat + Random().nextDouble(),
-                                    mainLong + Random().nextDouble()),
-                                "new coordinates",
-                                BitmapDescriptor.defaultMarker);
-                          });
+                          final newLat = mainLat + Random().nextDouble();
+                          final newLong = mainLong + Random().nextDouble();
+                          final newLatLng = LatLng(newLat, newLong);
+                          userHomeBloc.latestMarker = newLatLng;
+                          userHomeBloc.addMarker(newLatLng, newLat.toString(),
+                              BitmapDescriptor.defaultMarker);
                         },
                       ),
                       RaisedButton(
@@ -86,8 +117,10 @@ class _UserHomeState extends State<UserHome> {
                         onPressed: () {},
                       ),
                       RaisedButton(
-                        child: Text('+ Markers'),
-                        onPressed: () {},
+                        child: Text('- Marker'),
+                        onPressed: () {
+                          // setState()
+                        },
                       ),
                       Expanded(
                         child: RaisedButton(

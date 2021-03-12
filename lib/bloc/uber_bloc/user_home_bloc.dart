@@ -14,16 +14,19 @@ class UserHomeBloc {
   final requestQr = new BehaviorSubject<RequestQr>();
   String id = '';
   bool done = false;
+  LatLng latestMarker;
+
+  Completer<GoogleMapController> controllerGoogleMap = Completer();
+  GoogleMapController mapController;
+  Position currentPosition;
+  final markers = ReplaySubject<Map<MarkerId, Marker>>();
+
+  get getMarkers$ => markers.stream;
 
   final CameraPosition initialLocation = CameraPosition(
     target: mainCoordinates,
     zoom: 18.4746,
   );
-
-  Completer<GoogleMapController> controllerGoogleMap = Completer();
-  GoogleMapController mapController;
-  Position currentPosition;
-  Map<MarkerId, Marker> markers = {};
 
   // Completer<GoogleMapController> controllerGoogleMap = Completer();
   // GoogleMapController newMapController;
@@ -51,9 +54,44 @@ class UserHomeBloc {
 
   addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
     MarkerId markerId = MarkerId(id);
-    Marker marker =
-        Marker(markerId: markerId, icon: descriptor, position: position);
-    markers[markerId] = marker;
+    Marker marker = Marker(
+      infoWindow: InfoWindow(
+          title: id,
+          snippet: 'you clicked me!',
+          onTap: () {
+            print('you clicked me!!!');
+          }),
+      markerId: markerId,
+      icon: descriptor,
+      position: position,
+    );
+    markers.add({markerId: marker});
+  }
+
+  moveToMarker() async {
+    print('latestmarker');
+    print(latestMarker);
+    // CameraPosition cameraPosition = new CameraPosition(
+    //   target: latestMarker ?? mainCoordinates,
+    //   zoom: 17,
+    // );
+    // await mapController
+    // .moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    CameraPosition cameraPosition = new CameraPosition(
+      target: latestMarker ?? mainCoordinates,
+      zoom: 10,
+    );
+    await mapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
+
+  cameraGoToInitialAddress() async {
+    CameraPosition cameraPosition = new CameraPosition(
+      target: mainCoordinates,
+      zoom: 10,
+    );
+    await mapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
   // Future<void> _signOut() async {
