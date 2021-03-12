@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:new_practice/bloc/uber_bloc/uber-user_bloc.dart';
 import 'package:new_practice/bloc/uber_bloc/user_home_bloc.dart';
+import 'package:new_practice/config/maps/config_maps.dart';
 import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:new_practice/widgets/uber_widgets/user_drawer.dart';
 import 'package:sizer/sizer.dart';
@@ -68,7 +71,15 @@ class _UserHomeState extends State<UserHome> {
                     children: [
                       RaisedButton(
                         child: Text('+ Markers'),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            userHomeBloc.addMarker(
+                                LatLng(mainLat + Random().nextDouble(),
+                                    mainLong + Random().nextDouble()),
+                                "new coordinates",
+                                BitmapDescriptor.defaultMarker);
+                          });
+                        },
                       ),
                       RaisedButton(
                         child: Text('+ Markers'),

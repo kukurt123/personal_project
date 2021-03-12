@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:new_practice/config/maps/config_maps.dart';
 import 'package:new_practice/models/qr/requestqr.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/services/uber_clone/assistant_method.dart';
@@ -15,9 +16,10 @@ class UserHomeBloc {
   bool done = false;
 
   final CameraPosition initialLocation = CameraPosition(
-    target: LatLng(6.511147, 124.835194),
+    target: mainCoordinates,
     zoom: 18.4746,
   );
+
   Completer<GoogleMapController> controllerGoogleMap = Completer();
   GoogleMapController mapController;
   Position currentPosition;
@@ -34,6 +36,7 @@ class UserHomeBloc {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
+
     LatLng latLatPosition = LatLng(position.latitude, position.longitude);
 
     CameraPosition cameraPosition = new CameraPosition(
@@ -45,11 +48,6 @@ class UserHomeBloc {
     String address = await AssistantMethods.searchCoordinateAddress(position);
     print('location....$address');
   }
-
-  CameraPosition kGooglePlex = CameraPosition(
-    target: LatLng(6.511147, 124.835194),
-    zoom: 14.4746,
-  );
 
   addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
     MarkerId markerId = MarkerId(id);
