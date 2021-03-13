@@ -59,7 +59,7 @@ class UserHomeBloc {
           title: id,
           snippet: 'you clicked me!',
           onTap: () {
-            print('you clicked me!!!');
+            moveToMarker(position);
           }),
       markerId: markerId,
       icon: descriptor,
@@ -68,17 +68,11 @@ class UserHomeBloc {
     markers.add({markerId: marker});
   }
 
-  moveToMarker() async {
+  moveToMarker(LatLng coordinates) async {
     print('latestmarker');
     print(latestMarker);
-    // CameraPosition cameraPosition = new CameraPosition(
-    //   target: latestMarker ?? mainCoordinates,
-    //   zoom: 17,
-    // );
-    // await mapController
-    // .moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
     CameraPosition cameraPosition = new CameraPosition(
-      target: latestMarker ?? mainCoordinates,
+      target: coordinates,
       zoom: 10,
     );
     await mapController
