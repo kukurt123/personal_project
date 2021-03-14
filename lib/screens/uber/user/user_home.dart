@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import 'package:animate_do/animate_do.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:new_practice/bloc/uber_bloc/uber-user_bloc.dart';
 import 'package:new_practice/bloc/uber_bloc/user_home_bloc.dart';
 import 'package:new_practice/config/maps/config_maps.dart';
 import 'package:new_practice/widgets/text/text_deco.dart';
+import 'package:new_practice/widgets/uber_widgets/floating_search_bar.dart';
 import 'package:new_practice/widgets/uber_widgets/user_drawer.dart';
 import 'package:new_practice/widgets/uber_widgets/user_home_widgets.dart';
 import 'package:sizer/sizer.dart';
@@ -26,130 +30,161 @@ class _UserHomeState extends State<UserHome> {
   @override
   void initState() {
     super.initState();
+    print('init state???');
+    // userHomeBloc.isDoneLoading.add(false);
   }
 
   final userHomeBloc = Modular.get<UserHomeBloc>();
   final uberBloc = Modular.get<UberUserBloc>();
   @override
   Widget build(BuildContext context) {
+    userHomeBloc.cont = context;
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     Map<MarkerId, Marker> markers = {};
+    Map<PolylineId, Polyline> polyline = {};
 
     return Scaffold(
-      body: Container(
-        height: height,
-        width: width,
-        child: Scaffold(
-          body: Stack(
-            children: <Widget>[
-              StreamBuilder<Map<MarkerId, Marker>>(
-                  stream: userHomeBloc.getMarkers$,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      userHomeBloc.markers.forEach((e) {
-                        markers.addAll(e);
-                        // print(markers.values);
-                        print(markers.length);
-                      });
-                      return Stack(
+      body: StreamBuilder(
+          stream: userHomeBloc.getStreams$(),
+          builder: (context, snapshot) {
+            if (userHomeBloc.markers.values != null) {
+              print('has data....${userHomeBloc.markers.values.length}');
+              userHomeBloc.markers.forEach((e) {
+                markers.addAll(e);
+              });
+              userHomeBloc.polylines.forEach((e) {
+                polyline.addAll(e);
+              });
+              return Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: userHomeBloc.initialLocation,
+                    myLocationEnabled: true,
+                    // gestureRecognizers: Set()
+                    //   ..add(Factory<DragGestureRecognizer>(
+                    //       () => GestureEnabledOnMap(() {
+                    //             print('test');
+                    //           }))),
+                    // gestureRecognizers: Set()..add(Factory<DragGestureRecognizer>(() => GestureEnabledOnMap(() {print('test');})),
+                    // onCameraIdle:
+                    //     userHomeBloc.closeListOfContainers(),
+                    myLocationButtonEnabled: false,
+                    mapType: MapType.normal,
+                    zoomGesturesEnabled: true,
+                    zoomControlsEnabled: true,
+                    scrollGesturesEnabled: true,
+                    markers: Set<Marker>.of(markers.values),
+                    polylines: Set<Polyline>.of(polyline.values),
+                    onMapCreated: (GoogleMapController controller) async {
+                      userHomeBloc.mapController = controller;
+                      if (!userHomeBloc.controllerGoogleMap.isCompleted) {
+                        userHomeBloc.controllerGoogleMap.complete(controller);
+                        await userHomeBloc.initialAdd();
+                        await userHomeBloc.cameraGoToInitialAddress();
+                        userHomeBloc.isDoneLoading.add(true);
+                      }
+                    },
+                  ),
+                  Positioned(
+                    width: MediaQuery.of(context).size.width,
+                    top: 0,
+                    child: SlideInDown(
+                      animate: true,
+                      child: UserHomeCarousel(),
+                    ),
+                  ),
+                  Positioned(
+                    width: MediaQuery.of(context).size.width,
+                    // height: 100,
+                    bottom: 0,
+                    child: Container(
+                      // height: 50,
+                      // width: double.infinity,
+                      child: Row(
+                        // mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          GoogleMap(
-                            initialCameraPosition: userHomeBloc.initialLocation,
-                            myLocationEnabled: true,
-                            myLocationButtonEnabled: false,
-                            mapType: MapType.normal,
-                            zoomGesturesEnabled: true,
-                            zoomControlsEnabled: true,
-                            scrollGesturesEnabled: true,
-                            markers: Set<Marker>.of(markers.values),
-                            onMapCreated: (GoogleMapController controller) {
-                              userHomeBloc.mapController = controller;
-                              if (!userHomeBloc
-                                  .controllerGoogleMap.isCompleted) {
-                                userHomeBloc.controllerGoogleMap
-                                    .complete(controller);
-                                // userHomeBloc.cameraGoToInitialAddress();
+                          RaisedButton(
+                            color: Colors.red,
+                            child: Text('+',
+                                style: TextStyle1(
+                                    isBold: true,
+                                    color: Colors.white,
+                                    size: 30)),
+                            onPressed: () async {
+                              final newLat = mainLat + Random().nextDouble();
+                              final newLong = mainLong + Random().nextDouble();
+                              final newLatLng = LatLng(newLat, newLong);
+                              userHomeBloc.latestMarker = newLatLng;
+                              await userHomeBloc.addMarker(
+                                  newLatLng,
+                                  newLat.toString(),
+                                  BitmapDescriptor.defaultMarker);
+                              if (markers.length > 0) {
+                                await userHomeBloc.moveToMarker(
+                                    userHomeBloc.latestMarker ??
+                                        mainCoordinates);
                               }
-                              print('move to marker');
                             },
                           ),
-                          Positioned(
-                            width: MediaQuery.of(context).size.width,
-                            top: 0,
-                            child: UserHomeCarousel(),
+                          RaisedButton(
+                              color: Colors.purple,
+                              child: Text('+',
+                                  style: TextStyle1(
+                                      isBold: true,
+                                      color: Colors.white,
+                                      size: 30)),
+                              onPressed: () {
+                                final newLat = mainLat + Random().nextDouble();
+                                final newLong =
+                                    mainLong + Random().nextDouble();
+                                final newLatLng = LatLng(newLat, newLong);
+                                userHomeBloc.latestMarker = newLatLng;
+                                userHomeBloc.addMarker(
+                                    newLatLng,
+                                    newLat.toString(),
+                                    BitmapDescriptor.defaultMarkerWithHue(
+                                        BitmapDescriptor.hueMagenta));
+                                if (markers.length > 0) {
+                                  userHomeBloc.moveToMarker(
+                                      userHomeBloc.latestMarker ??
+                                          mainCoordinates);
+                                }
+                              }),
+                          Expanded(
+                            child: RaisedButton(
+                              color: Colors.grey[700],
+                              child: Icon(Icons.linear_scale_outlined),
+                              onPressed: () {
+                                userHomeBloc
+                                    .getPolyline(userHomeBloc.latestMarker);
+                              },
+                            ),
                           ),
-                          Positioned(bottom: 50, child: Text('testing'))
+                          RaisedButton(
+                              color: Colors.black54,
+                              child: Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          floatingSearchBar()),
+                                );
+                                print('on searched pressed');
+                              }),
                         ],
-                      );
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  }),
-
-              Positioned(
-                width: MediaQuery.of(context).size.width,
-                // height: 100,
-                bottom: 0,
-                child: Container(
-                  height: 50,
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      RaisedButton(
-                        child: Text('+ Markers'),
-                        onPressed: () {
-                          final newLat = mainLat + Random().nextDouble();
-                          final newLong = mainLong + Random().nextDouble();
-                          final newLatLng = LatLng(newLat, newLong);
-                          userHomeBloc.latestMarker = newLatLng;
-                          userHomeBloc.addMarker(newLatLng, newLat.toString(),
-                              BitmapDescriptor.defaultMarker);
-                          if (markers.length > 0) {
-                            userHomeBloc.moveToMarker(
-                                userHomeBloc.latestMarker ?? mainCoordinates);
-                          }
-                        },
                       ),
-                      RaisedButton(
-                        child: Text('+ Markers'),
-                        onPressed: () {
-                          final newLat = mainLat + Random().nextDouble();
-                          final newLong = mainLong + Random().nextDouble();
-                          final newLatLng = LatLng(newLat, newLong);
-                          userHomeBloc.latestMarker = newLatLng;
-                          userHomeBloc.addMarker(
-                              newLatLng,
-                              newLat.toString(),
-                              BitmapDescriptor.defaultMarkerWithHue(
-                                  BitmapDescriptor.hueMagenta));
-                          if (markers.length > 0) {
-                            userHomeBloc.moveToMarker(
-                                userHomeBloc.latestMarker ?? mainCoordinates);
-                          }
-                        },
-                      ),
-                      RaisedButton(
-                        child: Text('- Marker'),
-                        onPressed: () {
-                          // setState()
-                        },
-                      ),
-                      Expanded(
-                        child: RaisedButton(
-                          child: Text('+ Markers'),
-                          onPressed: () {},
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-              // TODO: Add Map View
-            ],
-          ),
-        ),
-      ),
+                    ),
+                  )
+                ],
+              );
+            }
+            return Center(child: CircularProgressIndicator());
+          }),
     );
   }
 }
