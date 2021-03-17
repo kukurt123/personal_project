@@ -1,11 +1,12 @@
-class APIPath {
+class RequestFirebaseApi {
   static String request(String uid, String jobId) =>
       'users/$uid/request/$jobId';
-
   static String requests(String uid) => 'users/$uid/request';
+}
 
-  static String entry(String uid, String entryId) =>
-      'users/$uid/entries/$entryId';
+class LocationFirebaseApi {
+  static String request(String uid, String jobId) =>
+      'users/$uid/location/$jobId';
 
-  static String entries(String uid) => 'users/$uid/entries';
+  static String requests(String uid) => 'users/$uid/location';
 }

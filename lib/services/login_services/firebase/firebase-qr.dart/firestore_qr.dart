@@ -32,7 +32,7 @@ class FirestoreQr {
   final _service = FirestoreService.instance;
 
   Future<void> setJob(RequestQr req) async => await _service.setData(
-        path: APIPath.request(uid, req.id),
+        path: RequestFirebaseApi.request(uid, req.id),
         data: req.toJson(),
       );
 
@@ -47,7 +47,7 @@ class FirestoreQr {
   // }
 
   Stream<List<RequestQr>> requestsStream() => _service.collectionStream(
-        path: APIPath.requests(uid),
+        path: RequestFirebaseApi.requests(uid),
         builder: (data, documentId) {
           RequestQr req = RequestQr.fromJson(data);
           req.copyWith.call(id: documentId);
@@ -58,7 +58,7 @@ class FirestoreQr {
 
   Stream<RequestQr> requestStream({@required String requestId}) =>
       _service.documentStream(
-        path: APIPath.request(uid, requestId),
+        path: RequestFirebaseApi.request(uid, requestId),
         builder: (data, docId) {
           RequestQr req = RequestQr.fromJson(data);
           req.copyWith.call(id: docId);

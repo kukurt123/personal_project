@@ -1,44 +1,58 @@
 import 'dart:async';
-import 'dart:ui';
-
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:new_practice/config/maps/config_maps.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:new_practice/models/qr/requestqr.dart';
-import 'package:new_practice/services/login_services/auth/auth.dart';
+import 'package:new_practice/models/uber/location_model.dart';
+import 'package:new_practice/services/login_services/firebase/firestore_uber.dart';
 import 'package:new_practice/services/uber_clone/assistant_method.dart';
+import 'package:new_practice/static/config/maps/config_maps.dart';
+import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
 import 'package:new_practice/widgets/uber_widgets/user_home_widgets.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
 class UserHomeBloc {
   UserHomeBloc() {
-    print('userHomebloc');
     getPolylines$.listen((x) => print('polylines....'));
     getMarkers$.listen((x) => print('markers....'));
     getStreams$().listen((x) => print('getStream....'));
   }
-  BuildContext cont;
-  bool isLoaded = false;
-  final requestQr = new BehaviorSubject<RequestQr>();
-  String id = '';
-  bool done = false;
-  LatLng latestMarker;
-  PolylinePoints polylinePoints = PolylinePoints();
-  // Map<PolylineId, Polyline> polylines = {};
-  Completer<GoogleMapController> controllerGoogleMap = Completer();
-  GoogleMapController mapController;
-  Position currentPosition;
+
+  final firestoreUber = Modular.get<FirestoreUber>();
+
   final markers = ReplaySubject<Map<MarkerId, Marker>>();
   final polylines = ReplaySubject<Map<PolylineId, Polyline>>();
   final isOpenedContainer = new BehaviorSubject<bool>.seeded(false);
   final isOpenBoxInfo = new BehaviorSubject<bool>.seeded(false);
   final isDoneLoading = BehaviorSubject<bool>();
+  final file = BehaviorSubject<File>();
+  final requestQr = new BehaviorSubject<RequestQr>();
+
+  BuildContext cont;
+  bool isLoaded = false;
+  String id = '';
+  bool done = false;
+  LatLng latestMarker;
+  PolylinePoints polylinePoints = PolylinePoints();
+  Completer<GoogleMapController> controllerGoogleMap = Completer();
+  GoogleMapController mapController;
+  Position currentPosition;
+  final picker = ImagePicker();
+  Map<MarkerId, Marker> markerValues = {};
+  Map<PolylineId, Polyline> polylineValues = {};
+  List<LocationModel> locations = [];
+
   get getMarkers$ => markers.stream;
   get getPolylines$ => polylines.stream;
+  get file$ => file.stream;
 
   final CameraPosition initialLocation = CameraPosition(
     target: mainCoordinates,
@@ -46,7 +60,36 @@ class UserHomeBloc {
   );
 
   Stream getStreams$() {
-    return MergeStream([markers, polylines, isDoneLoading]);
+    return MergeStream(
+        [markers, polylines, isDoneLoading, firestoreUber.locationsStream()]);
+  }
+
+  getLocations() {
+    firestoreUber.locationsStream().listen((i) async {
+      // LocationModel item =
+      i.forEach((item) {
+        // print(item.toString());
+        addMarkerFromStream(item);
+        locations.add(item);
+      });
+    });
+  }
+
+  Future<String> downloadImage(String imagePath) async {
+    final link = await firebase_storage.FirebaseStorage.instance
+        .ref('uberLocations/$imagePath.jpg')
+        .getDownloadURL();
+    print('downloadImage$link');
+    return link;
+  }
+
+  void populateMarkersPolylines() {
+    markers.forEach((e) {
+      markerValues.addAll(e);
+    });
+    polylines.forEach((e) {
+      polylineValues.addAll(e);
+    });
   }
 
   void locatePosition() async {
@@ -66,7 +109,7 @@ class UserHomeBloc {
     print('location....$address');
   }
 
-  addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
+  addMarker(LatLng position, String id, BitmapDescriptor descriptor) async {
     MarkerId markerId = MarkerId(id);
     Marker marker = Marker(
         infoWindow:
@@ -78,34 +121,54 @@ class UserHomeBloc {
         onTap: () {
           moveToMarker(position);
           getPolyline(position);
-          showBottomSheetModal(context: cont, widget: modalDialogDetails());
+          final result = locations.where((x) => x.id == id).first;
+          showBottomSheetModal(
+              context: cont, widget: modalDialogDetails(result));
         });
     markers.sink.add({markerId: marker});
   }
 
-  markerBehavior(LatLng position) {
-    moveToMarker(position);
-    getPolyline(position);
-    showBottomSheetModal(context: cont, widget: modalDialogDetails());
+  addMarkerFromStream(LocationModel loc) async {
+    MarkerId markerId = MarkerId(loc.id);
+    final position = LatLng(loc.lat, loc.long);
+    Marker marker = Marker(
+        infoWindow: InfoWindow(title: id, snippet: loc.info, onTap: () {}),
+        markerId: markerId,
+        icon: loc.type == 2
+            ? BitmapDescriptor.defaultMarker
+            : BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+        position: position,
+        draggable: true,
+        onTap: () {
+          moveToMarker(position);
+          getPolyline(position);
+          showBottomSheetModal(context: cont, widget: modalDialogDetails(loc));
+        });
+    markers.sink.add({markerId: marker});
   }
 
+  // markerBehavior(LatLng position) {
+  //   moveToMarker(position);
+  //   getPolyline(position);
+
+  //   showBottomSheetModal(context: cont, widget: modalDialogDetails());
+  // }
+
   openListOfContainers() {
-    print('opennn....');
+    //print('open...');
     if (isOpenedContainer.value) {
       isOpenedContainer.sink.add(false);
     }
   }
 
   closeListOfContainers() {
-    print('closeeeee....');
+    //print('...close......test...');
     if (!isOpenedContainer.value) {
       isOpenedContainer.sink.add(true);
     }
   }
 
   moveToMarker(LatLng coordinates) async {
-    print('latestmarker');
-    print(latestMarker);
     CameraPosition cameraPosition = new CameraPosition(
       target: coordinates,
       zoom: 10,
@@ -136,7 +199,7 @@ class UserHomeBloc {
     }
   }
 
-  void getPolyline(LatLng position) async {
+  getPolyline(LatLng position) async {
     List<LatLng> polylineCoordinates = [];
 
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -144,7 +207,6 @@ class UserHomeBloc {
       PointLatLng(mainLat, mainLong),
       PointLatLng(position.latitude, position.longitude),
       travelMode: TravelMode.driving,
-      // optimizeWaypoints: true
     );
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
@@ -167,27 +229,73 @@ class UserHomeBloc {
     polylines.sink.add({id: polyline});
   }
 
-  showBottomSheetModal({BuildContext context, Widget widget}) {
-    showModalBottomSheet<void>(
-      context: context,
-      barrierColor: Colors.transparent,
-      elevation: 20,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return widget;
-      },
-    );
+  pickImage({bool isCamera}) async {
+    final pickedFile = await picker.getImage(
+        source: isCamera ? ImageSource.camera : ImageSource.gallery);
+    print('resultttttttttt $pickedFile');
+    if (pickedFile != null) {
+      final File file2 = File(pickedFile.path);
+      print('' + file2.path);
+      file.add(file2);
+    }
   }
-  // Future<void> _signOut() async {
-  //   try {
-  //     await auth.signOut();
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
+
+  Future<firebase_storage.UploadTask> sendData(
+      {LocationModel loc,
+      String folderName,
+      String imageName,
+      File file}) async {
+    if (file == null) {
+      await Fluttertoast.showToast(
+          msg: "File not found",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return null;
+    }
+
+    firebase_storage.UploadTask uploadTask;
+
+    // Create a Reference to the file
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child(folderName)
+        .child('/$imageName.jpg');
+
+    final metadata = firebase_storage.SettableMetadata(
+        contentType: 'image/jpeg',
+        customMetadata: {'picked-file-path': file.path});
+
+    try {
+      if (kIsWeb) {
+        uploadTask = ref.putData(await file.readAsBytes(), metadata);
+      } else {
+        uploadTask = ref.putFile(file, metadata);
+      }
+    } on firebase_core.FirebaseException catch (e) {
+      print(e);
+      return null;
+    }
+
+    await firestoreUber.setLocation(loc);
+    Fluttertoast.showToast(
+        msg: "Sending Successful",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
+    print(loc.toString());
+    return Future.value(uploadTask);
+  }
 }
+
+// Future<void> _signOut() async {
+//   try {
+//     await auth.signOut();
+//   } catch (e) {
+//     print(e.toString());
+//   }
+// }

@@ -53,7 +53,6 @@ class _UberHomeState extends State<UberHome> {
                       _controllerGoogleMap.complete(controller);
                       newMapController = controller;
                       locatePosition();
-
                       setState(() {
                         bottomPaddingOfMap = 300.0;
                       });

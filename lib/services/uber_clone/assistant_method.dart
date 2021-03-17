@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:new_practice/config/maps/config_maps.dart';
 import 'package:new_practice/services/uber_clone/request_assistant.dart';
+import 'package:new_practice/static/config/maps/config_maps.dart';
 
 class AssistantMethods {
   static Future<String> searchCoordinateAddress(Position position) async {
