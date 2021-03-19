@@ -8,8 +8,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:new_practice/models/qr/requestqr.dart';
 import 'package:new_practice/models/uber/location_model.dart';
+import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/services/login_services/firebase/firestore_uber.dart';
 import 'package:new_practice/services/uber_clone/assistant_method.dart';
+import 'package:new_practice/services/uber_clone/request_assistant.dart';
 import 'package:new_practice/static/config/maps/config_maps.dart';
 import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
 import 'package:new_practice/widgets/uber_widgets/user_home_widgets.dart';
@@ -21,26 +23,32 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
 class UserHomeBloc {
   UserHomeBloc() {
-    getPolylines$.listen((x) => print('polylines....'));
-    getMarkers$.listen((x) => print('markers....'));
-    getStreams$().listen((x) => print('getStream....'));
+    practice();
+    // getPolylines$.listen((x) => print('polylines....'));
+    // getMarkers$.listen((x) => print('markers....'));
+    // getStreams$().listen((x) => print('getStream....'));
   }
 
   final firestoreUber = Modular.get<FirestoreUber>();
+  final auth = Modular.get<AuthService>();
 
   final markers = ReplaySubject<Map<MarkerId, Marker>>();
   final polylines = ReplaySubject<Map<PolylineId, Polyline>>();
+  final circles = ReplaySubject<Map<CircleId, Circle>>();
+  // final circles = ReplaySubject<Circle>();
   final isOpenedContainer = new BehaviorSubject<bool>.seeded(false);
   final isOpenBoxInfo = new BehaviorSubject<bool>.seeded(false);
   final isDoneLoading = BehaviorSubject<bool>();
   final file = BehaviorSubject<File>();
   final requestQr = new BehaviorSubject<RequestQr>();
+  final places = new BehaviorSubject<List<Map<String, dynamic>>>();
 
   BuildContext cont;
   bool isLoaded = false;
   String id = '';
   bool done = false;
   LatLng latestMarker;
+  LatLng mainLatLng;
   PolylinePoints polylinePoints = PolylinePoints();
   Completer<GoogleMapController> controllerGoogleMap = Completer();
   GoogleMapController mapController;
@@ -48,6 +56,7 @@ class UserHomeBloc {
   final picker = ImagePicker();
   Map<MarkerId, Marker> markerValues = {};
   Map<PolylineId, Polyline> polylineValues = {};
+  Map<CircleId, Circle> circleValues = {};
   List<LocationModel> locations = [];
 
   get getMarkers$ => markers.stream;
@@ -65,9 +74,12 @@ class UserHomeBloc {
   }
 
   getLocations() {
+    print('getLocations');
     firestoreUber.locationsStream().listen((i) async {
+      locations = [];
       // LocationModel item =
       i.forEach((item) {
+        print('marker from streams $item');
         // print(item.toString());
         addMarkerFromStream(item);
         locations.add(item);
@@ -79,8 +91,12 @@ class UserHomeBloc {
     final link = await firebase_storage.FirebaseStorage.instance
         .ref('uberLocations/$imagePath.jpg')
         .getDownloadURL();
-    print('downloadImage$link');
     return link;
+  }
+
+  onTapMap(LatLng latLng) async {
+    mainLatLng = latLng;
+    await addMarker(latLng, auth.getCurrentUserId(), "2");
   }
 
   void populateMarkersPolylines() {
@@ -89,6 +105,9 @@ class UserHomeBloc {
     });
     polylines.forEach((e) {
       polylineValues.addAll(e);
+    });
+    circles.forEach((e) {
+      circleValues.addAll(e);
     });
   }
 
@@ -109,18 +128,40 @@ class UserHomeBloc {
     print('location....$address');
   }
 
-  addMarker(LatLng position, String id, BitmapDescriptor descriptor) async {
+  addCircle({String circleId, LatLng latLng}) {
+    final id = new CircleId(circleId);
+    Circle circ = new Circle(
+        circleId: id,
+        center: latLng,
+        radius: 10,
+        strokeWidth: 10,
+        strokeColor: Color(0x555550123),
+        fillColor: Theme.of(cont).primaryColor,
+        onTap: () async => await Fluttertoast.showToast(
+            msg: "You are here!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0));
+    circles.add({id: circ});
+  }
+
+  addMarker(LatLng position, String id, String type) async {
     MarkerId markerId = MarkerId(id);
     Marker marker = Marker(
         infoWindow:
             InfoWindow(title: id, snippet: 'you clicked me!', onTap: () {}),
         markerId: markerId,
-        icon: descriptor,
+        icon: type == "1"
+            ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
+            : BitmapDescriptor.defaultMarker,
         position: position,
         draggable: true,
         onTap: () {
           moveToMarker(position);
           getPolyline(position);
+
           final result = locations.where((x) => x.id == id).first;
           showBottomSheetModal(
               context: cont, widget: modalDialogDetails(result));
@@ -181,12 +222,32 @@ class UserHomeBloc {
 
   initialAdd() async {
     final newLatLng = LatLng(mainLat, mainLong);
-    latestMarker = newLatLng;
-    await addMarker(
-        newLatLng, mainLat.toString(), BitmapDescriptor.defaultMarker);
+    mainLatLng = newLatLng;
+    await addMarker(newLatLng, auth.getCurrentUserId(), "2");
+    // addCircle(circleId: , latLng: newLatLng);
     await moveToMarker(latestMarker ?? mainCoordinates);
     print('initial add....');
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    // currentPosition = position;
+    print('position.... ${position.longitude}');
   }
+
+  // initialAdd() async {
+  //   Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
+  //   // currentPosition = position;
+  //   print('position.... ${position.longitude}');
+  //   mainLatLng = LatLng(position.latitude, position.longitude);
+  //   // final newLatLng = LatLng(mainLat, mainLong);
+  //   latestMarker = mainLatLng;
+  //   await addMarker(
+  //       mainLatLng, auth.getCurrentUserId(), BitmapDescriptor.defaultMarker);
+  //   // addCircle(circleId: , latLng: newLatLng);
+  //   await moveToMarker(latestMarker ?? mainCoordinates);
+  //   print('initial add....');
+  // }
 
   cameraGoToInitialAddress() async {
     if (markers.isEmpty != null) {
@@ -204,7 +265,7 @@ class UserHomeBloc {
 
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       mapKey,
-      PointLatLng(mainLat, mainLong),
+      PointLatLng(mainLatLng.latitude, mainLatLng.longitude),
       PointLatLng(position.latitude, position.longitude),
       travelMode: TravelMode.driving,
     );
@@ -289,6 +350,99 @@ class UserHomeBloc {
         fontSize: 16.0);
     print(loc.toString());
     return Future.value(uploadTask);
+  }
+
+  practice() {
+    // final sett = Set<String>();
+    // ReplaySubject<String> bs = ReplaySubject<String>();
+
+    // sett.add('1');
+    // sett.add('2');
+    // bs.add('1');
+    // bs.add('2');
+
+    // print('printing....');
+    // print('sett:${sett}');
+    // print('bs:${bs.values.toSet()}');
+    // print(' ${Set<String>.of(bs.values)}');
+    // final map = Map<String, dynamic>();
+    // map.addAll({
+    //   'test': "test",
+    //   "tester": "tester",
+    //   "array": ["array", "array"],
+    //   "list": {"test": 'tester'},
+    //   "advancedMap": {
+    //     ["am1"],
+    //     ["amp2"],
+    //     ['amp3'],
+    //     {"amp4": "test"}
+    //   }
+    // });
+    final place2 = new BehaviorSubject<List<Map<String, dynamic>>>();
+    final listMap = List<Map<String, dynamic>>();
+
+    listMap.addAll(
+      [
+        {"test": "tester"},
+        {"test2": "tester2"}
+      ],
+    );
+    print('PRACTICE...');
+    place2.add(listMap);
+    print(place2.value);
+    // print('bs:${ Set<Marker>.of(bs.values.toList())}');
+  }
+
+  findPlace(String name) async {
+    if (name.length > 2) {
+      List<Map<String, dynamic>> list = [];
+      String autoCompleteUrl =
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$name&key=$mapKey&sessiontoken=1234567890&components=country:ph";
+      var res = await RequestAssistant.getRequest(autoCompleteUrl);
+      print('finding place...');
+      // print(res);
+
+      res["predictions"].forEach((pred) {
+        list.addAll([
+          {
+            'id': pred["place_id"].toString(),
+            'desc': pred['description'].toString()
+          }
+        ]);
+      });
+
+      // final resu = res["predictions"]
+      //     .map((pred) => {
+      //           'id': pred["place_id"].toString(),
+      //           'desc': pred['description'].toString()
+      //         })
+      //     .toList();
+      places.add(list);
+    }
+  }
+
+  Future<LocationModel> getPlaceAddressDetails(String placeId) async {
+    LocationModel address;
+    String placeDetailsUrl =
+        "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
+    var res = await RequestAssistant.getRequest(placeDetailsUrl);
+    if (res == "failed") {
+      return null;
+    }
+
+    if (res["status"] == "OK") {
+      address = LocationModel(
+        locName: res["result"]["name"],
+        id: res["result"]["place_id"],
+        lat: res["result"]["geometry"]["location"]["lat"],
+        long: res["result"]["geometry"]["location"]["lng"],
+        imageName: res["result"]["url"],
+        type: 1,
+      );
+      // return address;
+    }
+
+    return address;
   }
 }
 

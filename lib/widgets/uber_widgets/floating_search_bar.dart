@@ -1,8 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'dart:math';
 
-class floatingSearchBar extends StatelessWidget {
-  const floatingSearchBar({Key key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:new_practice/bloc/uber_bloc/user_home_bloc.dart';
+import 'package:new_practice/models/uber/location_model.dart';
+import 'package:new_practice/utils/list/item-list.widget.dart';
+import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
+
+import 'user_home_widgets.dart';
+
+class UberSearchBar extends StatelessWidget {
+  const UberSearchBar({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +25,9 @@ class floatingSearchBar extends StatelessWidget {
 }
 
 Widget buildFloatingSearchBar(BuildContext context) {
+  final userHomeBloc = Modular.get<UserHomeBloc>();
   final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+  final random = Random().nextDouble();
 
   return FloatingSearchBar(
     hint: 'Search...',
@@ -27,9 +39,35 @@ Widget buildFloatingSearchBar(BuildContext context) {
     openAxisAlignment: 0.0,
     maxWidth: isPortrait ? 600 : 500,
     debounceDelay: const Duration(milliseconds: 500),
+
     onQueryChanged: (query) {
+      userHomeBloc.findPlace(query);
       // Call your model, bloc, controller here.
     },
+    body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: userHomeBloc.places.stream,
+        builder: (context, snapshot) {
+          return ListItemsBuilder<dynamic>(
+            snapshot: snapshot,
+            itemBuilder: (context, item) => ListTile(
+              leading: Icon(Icons.place),
+              title: Text(item["desc"]),
+              onTap: () async {
+                Navigator.of(context).pop();
+                LocationModel location =
+                    await userHomeBloc.getPlaceAddressDetails(item["id"]);
+                final latLng = LatLng(location.lat, location.long);
+                await userHomeBloc.addMarker(
+                    latLng, location.id, location.type.toString());
+                await userHomeBloc.getPolyline(latLng);
+                await userHomeBloc.moveToMarker(latLng);
+                // await showBottomSheetModal(
+                //     context: userHomeBloc.cont,
+                //     widget: modalDialogDetails(location));
+              },
+            ),
+          );
+        }),
     // Specify a custom transition to be used for
     // animating between opened and closed stated.
     transition: CircularFloatingSearchBarTransition(),
@@ -46,19 +84,20 @@ Widget buildFloatingSearchBar(BuildContext context) {
       ),
     ],
     builder: (context, transition) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Material(
-          color: Colors.white,
-          elevation: 4.0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: Colors.accents.map((color) {
-              return Container(height: 112, color: color);
-            }).toList(),
-          ),
-        ),
-      );
+      return Center(child: Text(random.toString()));
+      // ClipRRect(
+      //   borderRadius: BorderRadius.circular(8),
+      //   child: Material(
+      //     color: Colors.white,
+      //     elevation: 4.0,
+      //     child: Column(
+      //       mainAxisSize: MainAxisSize.min,
+      //       children: Colors.accents.map((color) {
+      //         return Container(height: 112, color: color);
+      //       }).toList(),
+      //     ),
+      //   ),
+      // );
     },
   );
 }

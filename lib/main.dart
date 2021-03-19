@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:hive/hive.dart';
 import 'package:new_practice/bloc/qr_bloc.dart';
 import 'package:new_practice/repo/page1_1_repo.dart';
 import 'package:new_practice/routing/routing.dart';
@@ -14,9 +17,12 @@ import 'bloc/page1_3/page1_3rx.dart';
 import 'bloc/uber_bloc/uber-user_bloc.dart';
 import 'models/uber_model/email-sign-in-change.model.dart';
 
-void main() {
+void main() async {
+  Hive..init(Directory.current.path);
+  // ..registerAdapter(PersonAdapter());
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
+
   runApp(ModularApp(
     module: AppModule(),
   ));

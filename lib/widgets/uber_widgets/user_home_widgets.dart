@@ -22,7 +22,7 @@ class UserHomeCarousel extends StatelessWidget {
           GestureDetector(
             onTap: () {
               userHomeBloc.moveToMarker(LatLng(item.lat, item.long));
-              userHomeBloc.locatePosition();
+              // userHomeBloc.locatePosition();
               userHomeBloc.getPolyline(LatLng(item.lat, item.long));
             },
             child: Container(
@@ -47,26 +47,42 @@ class UserHomeCarousel extends StatelessWidget {
                           ),
                           padding: EdgeInsets.symmetric(
                               vertical: 10.0, horizontal: 20.0),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  item.locName,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  item.info,
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 18.0,
-                                  ),
-                                ),
-                              ])),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              ImageWithState(
+                                height: 50,
+                                width: 50,
+                                futureUrl:
+                                    userHomeBloc.downloadImage(item.imageName),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      item.locName,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      item.info,
+                                      overflow: TextOverflow.fade,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 10.0,
+                                      ),
+                                    ),
+                                  ]),
+                            ],
+                          )),
                     ),
                   ],
                 ),
@@ -108,18 +124,13 @@ Widget modalDialogDetails(LocationModel model) {
             model.info,
             style: TextStyle1(size: 2.0.h, color: Colors.grey[700]),
           ),
-          FutureBuilder<String>(
-              future: userHomeBloc.downloadImage(model.imageName),
-              builder: (context, snapshot) {
-                print('snapshott${snapshot.data}');
-                return Expanded(
-                  child: ImageWithState(
-                    url: snapshot.data,
-                    height: 100,
-                    width: 100,
-                  ),
-                );
-              }),
+          Expanded(
+            child: ImageWithState(
+              futureUrl: userHomeBloc.downloadImage(model.imageName),
+              height: 100,
+              width: 100,
+            ),
+          ),
           // SizedBox(
           //   height: 1.0.h,
           // ),
@@ -220,4 +231,19 @@ Widget modalDialogDetails(LocationModel model) {
       ),
     ),
   );
+}
+
+class PlacesPageTile extends StatelessWidget {
+  const PlacesPageTile({Key key, @required this.location, this.onTap})
+      : super(key: key);
+  final LocationModel location;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(location.locName),
+      onTap: onTap,
+    );
+  }
 }

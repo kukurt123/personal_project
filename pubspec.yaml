@@ -31,6 +31,7 @@ dependencies:
   extended_image: ^1.6.0
   firebase_auth: ^0.18.3+1
   firebase_core: ^0.5.3
+  firebase_messaging: ^8.0.0-dev.10
   firebase_storage: ^5.0.1
   floating_search_bar: ^0.3.0
   flutter_bloc: ^6.1.1
@@ -48,9 +49,11 @@ dependencies:
   geolocator: ^6.2.0
   google_maps_flutter: ^1.2.0
   google_sign_in: ^4.5.9
+  hive: ^1.5.0-pre
   http: ^0.12.2
   hydrated_bloc: ^6.1.0
   image_picker: ^0.6.7+22
+  infinite_scroll_pagination: ^2.3.0
   introduction_screen: ^1.0.9
   jitsi_meet: ^2.0.0
   json_serializable: ^3.5.1
@@ -72,6 +75,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.0
+  hive_generator: ^0.8.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

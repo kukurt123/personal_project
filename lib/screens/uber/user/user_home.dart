@@ -11,6 +11,7 @@ import 'package:new_practice/bloc/uber_bloc/user_home_bloc.dart';
 import 'package:new_practice/models/uber/location_model.dart';
 import 'package:new_practice/static/config/maps/config_maps.dart';
 import 'package:new_practice/static/id.dart';
+import 'package:new_practice/utils/list/item-list.widget.dart';
 import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
 import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:new_practice/widgets/uber_widgets/floating_search_bar.dart';
@@ -38,6 +39,7 @@ class _UserHomeState extends State<UserHome> {
   void initState() {
     super.initState();
     print('init state???');
+
     // userHomeBloc.isDoneLoading.add(false);
   }
 
@@ -61,7 +63,7 @@ class _UserHomeState extends State<UserHome> {
               userHomeBloc.populateMarkersPolylines();
               return Stack(
                 children: [
-                  _googleMap(
+                  _googleMap(userHomeBloc.circleValues,
                       userHomeBloc.markerValues, userHomeBloc.polylineValues),
                   Positioned(
                     width: MediaQuery.of(context).size.width,
@@ -93,7 +95,25 @@ class _UserHomeState extends State<UserHome> {
   }
 
 //WIDGETS
-  Widget _googleMap(
+  // Widget _buildContents(BuildContext context) {
+  //   return StreamBuilder<List<LocationModel>>(
+  //       stream: database.jobsStream(),
+  //       builder: (context, snapshot) {
+  //         return ListItemsBuilder<LocationModel>(
+  //             snapshot: snapshot,
+  //             itemBuilder: (context, place) => Dismissible(
+  //                 key: Key('job-${place.id}'),
+  //                 background: Container(color: Colors.blue[900]),
+  //                 direction: DismissDirection.endToStart,
+  //                 // onDismissed: (direction) => _delete(context, job),
+  //                 child: PlacesPageTile(
+  //                   location: place,
+  //                   onTap: () {},
+  //                 )));
+  //       });
+  // }
+
+  Widget _googleMap(Map<CircleId, Circle> circles,
       Map<MarkerId, Marker> markers, Map<PolylineId, Polyline> polyline) {
     return GoogleMap(
       initialCameraPosition: userHomeBloc.initialLocation,
@@ -106,11 +126,13 @@ class _UserHomeState extends State<UserHome> {
       // gestureRecognizers: Set()..add(Factory<DragGestureRecognizer>(() => GestureEnabledOnMap(() {print('test');})),
       // onCameraIdle:
       //     userHomeBloc.closeListOfContainers(),
+      onTap: userHomeBloc.onTapMap,
       myLocationButtonEnabled: false,
       mapType: MapType.normal,
       zoomGesturesEnabled: true,
       zoomControlsEnabled: true,
       scrollGesturesEnabled: true,
+      circles: Set<Circle>.of(circles.values),
       markers: Set<Marker>.of(markers.values),
       polylines: Set<Polyline>.of(polyline.values),
       onMapCreated: (GoogleMapController controller) async {
@@ -118,9 +140,9 @@ class _UserHomeState extends State<UserHome> {
         userHomeBloc.mapController = controller;
         if (!userHomeBloc.controllerGoogleMap.isCompleted) {
           userHomeBloc.controllerGoogleMap.complete(controller);
+          await userHomeBloc.getLocations();
           await userHomeBloc.initialAdd();
           await userHomeBloc.cameraGoToInitialAddress();
-          userHomeBloc.getLocations();
           userHomeBloc.isDoneLoading.add(true);
         }
       },
@@ -146,8 +168,7 @@ class _UserHomeState extends State<UserHome> {
             final newLatLng = LatLng(newLat, newLong);
             userHomeBloc.latestMarker = newLatLng;
 
-            await userHomeBloc.addMarker(newLatLng, newLat.toString(),
-                BitmapDescriptor.defaultMarker);
+            await userHomeBloc.addMarker(newLatLng, newLat.toString(), "1");
             if (markers.length > 0) {
               await userHomeBloc
                   .moveToMarker(userHomeBloc.latestMarker ?? mainCoordinates);
@@ -166,10 +187,10 @@ class _UserHomeState extends State<UserHome> {
               final newLatLng = LatLng(newLat, newLong);
               userHomeBloc.latestMarker = newLatLng;
               userHomeBloc.addMarker(
-                  newLatLng,
-                  newLat.toString(),
-                  BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueMagenta),);
+                newLatLng,
+                newLat.toString(),
+                "1",
+              );
               if (markers.length > 0) {
                 userHomeBloc
                     .moveToMarker(userHomeBloc.latestMarker ?? mainCoordinates);
@@ -182,10 +203,7 @@ class _UserHomeState extends State<UserHome> {
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => floatingSearchBar()),
-              );
+              Modular.link.pushNamed('/search');
               print('on searched pressed');
             }),
         RaisedButton(
@@ -195,10 +213,6 @@ class _UserHomeState extends State<UserHome> {
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => floatingSearchBar()),
-              );
               print('on searched pressed');
             }),
         RaisedButton(
@@ -338,12 +352,12 @@ class _UserHomeState extends State<UserHome> {
                         String id = appId;
                         final loc = new LocationModel(
                             id: id,
-                            lat: userHomeBloc.latestMarker.latitude,
-                            long: userHomeBloc.latestMarker.longitude,
+                            lat: userHomeBloc.mainLatLng.latitude,
+                            long: userHomeBloc.mainLatLng.longitude,
                             imageName: id,
                             locName: nameController.text,
                             locDate: new DateTime.now(),
-                            type: 2,
+                            type: 1,
                             info: requestController.text);
                         await userHomeBloc.sendData(
                             loc: loc,
