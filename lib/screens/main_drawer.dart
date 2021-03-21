@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/bloc/page1_1/page1_1_barrel.dart';
-import 'package:new_practice/mock_data/social_media.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
 import 'package:new_practice/widgets/extras.dart';
 
@@ -28,12 +27,7 @@ class _DrawerMainState extends State<DrawerMain> {
 
   @override
   Widget build(BuildContext context) {
-    // print('starting.........');
     final mainBloc = Modular.get<MainBloc>();
-    // final user = new SocialUser();
-    // mainBloc.changeUser(user: currentUser);
-    print('result....');
-    // print(mainBloc.currentUser.value);
     return Container(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -117,7 +111,7 @@ class _DrawerMainState extends State<DrawerMain> {
           DrawerListItem(
             icon: Icons.home,
             text: 'Home Page',
-            routeName: 'main',
+            routeName: '/home',
             onTap: () {},
           ),
           DrawerListItem(

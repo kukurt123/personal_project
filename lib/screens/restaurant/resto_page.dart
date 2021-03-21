@@ -75,7 +75,7 @@ class RestoPageState extends State<RestoPage> {
             InkWell(
               onTap: () {
                 // Navigator.pop(context);
-                Modular.to.pushReplacementNamed('/main');
+                Modular.to.pushReplacementNamed('/home');
               },
               child: Container(
                 height: 100,

@@ -1,27 +1,45 @@
 import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:hive/hive.dart';
-import 'package:new_practice/bloc/qr_bloc.dart';
-import 'package:new_practice/repo/page1_1_repo.dart';
-import 'package:new_practice/routing/routing.dart';
 import 'package:new_practice/screens/main_drawer.dart';
-import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
-import 'package:new_practice/services/login_services/auth/auth.dart';
+import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:sizer/sizer.dart';
-import 'bloc/main_bloc.dart';
-import 'bloc/page1_1/page1_1_barrel.dart';
-import 'bloc/page1_3/page1_3rx.dart';
-import 'bloc/uber_bloc/uber-user_bloc.dart';
-import 'models/uber_model/email-sign-in-change.model.dart';
+import 'routing/app_module.dart';
+import 'services/firebase_messaging/firebase_messaging_background_handler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'High Importance Notifications', // title
+  'This channel is used for important notifications.', // description
+  importance: Importance.high,
+);
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   Hive..init(Directory.current.path);
   // ..registerAdapter(PersonAdapter());
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(FirebaseMessagingBackgroundHandler);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  /// Update the iOS foreground notification presentation options to allow
+  /// heads up notifications.
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 
   runApp(ModularApp(
     module: AppModule(),
@@ -49,66 +67,5 @@ class AppWidget extends StatelessWidget {
         },
       );
     });
-  }
-}
-
-class AppModule extends MainModule {
-  @override
-  // TODO: implement binds
-  List<Bind> get binds => [
-        Bind((i) => Page1Bloc(repo: new Page1Repository())),
-        Bind((i) => Page1_3rx(), singleton: true),
-        Bind((i) => MainBloc()),
-        Bind((i) => AuthService()),
-        Bind((i) => SignInManager()),
-        Bind((i) => EmailSignInChangeModel(), singleton: false),
-        Bind((i) => QrBloc()),
-        Bind((i) => UberUserBloc()),
-      ];
-  @override
-  // TODO: implement bootstrap
-  Widget get bootstrap => AppWidget();
-
-  @override
-  // TODO: implement routers
-  List<ModularRouter> get routers => routing();
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: MainDrawer(),
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
-        backgroundColor: Colors.red,
-        child: Icon(Icons.add),
-      ),
-    );
   }
 }

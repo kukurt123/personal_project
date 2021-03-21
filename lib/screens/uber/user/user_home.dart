@@ -5,17 +5,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:new_practice/bloc/uber_bloc/uber-user_bloc.dart';
 import 'package:new_practice/bloc/uber_bloc/user_home_bloc.dart';
 import 'package:new_practice/models/uber/location_model.dart';
 import 'package:new_practice/static/config/maps/config_maps.dart';
-import 'package:new_practice/static/id.dart';
-import 'package:new_practice/utils/list/item-list.widget.dart';
 import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
-import 'package:new_practice/widgets/text/text_deco.dart';
-import 'package:new_practice/widgets/uber_widgets/floating_search_bar.dart';
-import 'package:new_practice/widgets/uber_widgets/user_drawer.dart';
 import 'package:new_practice/widgets/uber_widgets/user_home_widgets.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 
 class UserHome extends StatefulWidget {
   final User user;
@@ -45,10 +39,6 @@ class _UserHomeState extends State<UserHome> {
 
   final userHomeBloc = Modular.get<UserHomeBloc>();
   final uberBloc = Modular.get<UberUserBloc>();
-  final GlobalKey<FormBuilderState> keyy = GlobalKey<FormBuilderState>();
-  final requestController = TextEditingController();
-  final paymentController = TextEditingController();
-  final nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     userHomeBloc.cont = context;
@@ -229,6 +219,10 @@ class _UserHomeState extends State<UserHome> {
   }
 
   _showButtonSheet() {
+    final GlobalKey<FormBuilderState> keyy = GlobalKey<FormBuilderState>();
+    final requestController = TextEditingController();
+    final paymentController = TextEditingController();
+    final nameController = TextEditingController();
     showAsBottomSheet(
       context: context,
       // height: 800,
@@ -349,7 +343,7 @@ class _UserHomeState extends State<UserHome> {
                         if (userHomeBloc.file.value == null) {
                           return;
                         }
-                        String id = appId;
+                        String id = Uuid().v4();
                         final loc = new LocationModel(
                             id: id,
                             lat: userHomeBloc.mainLatLng.latitude,

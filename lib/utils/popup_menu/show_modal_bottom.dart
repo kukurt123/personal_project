@@ -27,7 +27,7 @@ void showAsBottomSheet(
     return SlidingSheetDialog(
       elevation: 8,
       cornerRadius: 16,
-      snapSpec: const SnapSpec(
+      snapSpec: SnapSpec(
         snap: true,
         snappings: [0.4, 0.7, 1.0],
         positioning: SnapPositioning.relativeToAvailableSpace,

@@ -60,7 +60,7 @@ class DrawerListItem extends StatelessWidget {
           this.onTap();
         }
         Navigator.pop(context);
-        Modular.to.pushReplacementNamed(this.routeName);
+        Modular.to.pushNamed('/main/' + this.routeName);
         // if (onTap()) {
         // }
       },

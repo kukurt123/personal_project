@@ -46,10 +46,11 @@ android {
         multiDexEnabled true
     }
 
-    compileOptions {
+        compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 
     buildTypes {
         release {
@@ -57,7 +58,7 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
 
-            minifyEnabled true
+             minifyEnabled true
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
