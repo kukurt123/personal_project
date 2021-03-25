@@ -3,6 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/bloc/page1_1/page1_1_barrel.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
+import 'package:new_practice/services/firebase_messaging/firebase_messaging_background_handler.dart';
 import 'package:new_practice/widgets/extras.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -112,7 +113,10 @@ class _DrawerMainState extends State<DrawerMain> {
             icon: Icons.home,
             text: 'Home Page',
             routeName: '/home',
-            onTap: () {},
+            withFunc: true,
+            onTap: () {
+              mainBloc.firebaseOnMessage();
+            },
           ),
           DrawerListItem(
             icon: Icons.folder,
@@ -120,6 +124,7 @@ class _DrawerMainState extends State<DrawerMain> {
             routeName: '/page1',
             withFunc: true,
             onTap: () {
+              mainBloc.sendPushMessage();
               Modular.get<Page1Bloc>().add(Page1EventSummary());
             },
           ),

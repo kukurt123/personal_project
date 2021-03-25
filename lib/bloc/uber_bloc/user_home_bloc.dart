@@ -17,7 +17,7 @@ import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
 import 'package:new_practice/widgets/uber_widgets/user_home_widgets.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
@@ -137,13 +137,16 @@ class UserHomeBloc {
         strokeWidth: 10,
         strokeColor: Color(0x555550123),
         fillColor: Theme.of(cont).primaryColor,
-        onTap: () async => await Fluttertoast.showToast(
-            msg: "You are here!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0));
+        onTap: () {}
+        // async =>
+        // await Fluttertoast.showToast(
+        //     msg: "You are here!",
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.BOTTOM,
+        //     backgroundColor: Colors.green,
+        //     textColor: Colors.white,
+        //     fontSize: 16.0)
+        );
     circles.add({id: circ});
   }
 
@@ -307,13 +310,13 @@ class UserHomeBloc {
       String imageName,
       File file}) async {
     if (file == null) {
-      await Fluttertoast.showToast(
-          msg: "File not found",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      // await Fluttertoast.showToast(
+      //     msg: "File not found",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     backgroundColor: Colors.green,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
       return null;
     }
 
@@ -341,13 +344,13 @@ class UserHomeBloc {
     }
 
     await firestoreUber.setLocation(loc);
-    Fluttertoast.showToast(
-        msg: "Sending Successful",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    // Fluttertoast.showToast(
+    //     msg: "Sending Successful",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.green,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0);
     print(loc.toString());
     return Future.value(uploadTask);
   }

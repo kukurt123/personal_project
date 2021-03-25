@@ -4,28 +4,24 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:hive/hive.dart';
-import 'package:new_practice/screens/main_drawer.dart';
-import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:sizer/sizer.dart';
 import 'routing/app_module.dart';
 import 'services/firebase_messaging/firebase_messaging_background_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  'This channel is used for important notifications.', // description
-  importance: Importance.high,
-);
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-void main() async {
+FirebaseMessaging firebaseMessaging1;
+Future<void> main() async {
   Hive..init(Directory.current.path);
   // ..registerAdapter(PersonAdapter());
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  Future<void> FirebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    // If you're going to use other Firebase services in the background, such as Firestore,
+    // make sure you call `initializeApp` before using other Firebase services.
+    await Firebase.initializeApp();
+    print('Handling a background message ${message.messageId}');
+  }
 
   FirebaseMessaging.onBackgroundMessage(FirebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin
@@ -46,9 +42,22 @@ void main() async {
   ));
 }
 
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'High Importance Notifications', // title
+  'This channel is used for important notifications.', // description
+  importance: Importance.high,
+);
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // void test() async {
+    // }
+    // mainBloc.firebaseOnMessage();
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return OrientationBuilder(

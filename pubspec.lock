@@ -559,7 +559,7 @@ packages:
       name: fluttertoast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.1.8"
+    version: "6.0.1"
   freezed:
     dependency: "direct main"
     description:
@@ -1168,7 +1168,7 @@ packages:
     source: hosted
     version: "0.2.19-nullsafety.2"
   time:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: time
       url: "https://pub.dartlang.org"
