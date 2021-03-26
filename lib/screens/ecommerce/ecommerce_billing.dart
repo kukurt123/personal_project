@@ -1,187 +1,107 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:new_practice/mock_data/restaurant_data.dart';
-import 'package:new_practice/models/order.dart';
-import 'package:new_practice/models/restaurant.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
+import 'package:sizer/sizer.dart';
 
-class RecentOrders extends StatelessWidget {
-  // const RestoList({Key key}) : super(key: key);
-
-  _buildRecentOrder(BuildContext context, Order order) {
-    return Container(
-        margin: EdgeInsets.all(10.0),
-        width: 320.0,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15.0),
-          border: Border.all(
-            width: 1.0,
-            color: Colors.grey[200],
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+void showButtonSheet(BuildContext context) {
+  final GlobalKey<FormBuilderState> keyy = GlobalKey<FormBuilderState>();
+  final requestController = TextEditingController();
+  final paymentController = TextEditingController();
+  final nameController = TextEditingController();
+  showAsBottomSheet(
+    context: context,
+    // height: 800,
+    widget: Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Expanded(
-              child: Row(
+            FormBuilder(
+              key: keyy,
+              onChanged: () {},
+              child: Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image(
-                        image: AssetImage(order.food.imageUrl),
-                        height: 100.0,
-                        width: 100.0,
-                        fit: BoxFit.cover),
+                  FormBuilderTextField(
+                    controller: nameController,
+                    name: 'name',
+                    decoration: InputDecoration(
+                        labelText: 'Name', icon: Icon(Icons.person)),
                   ),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            order.food.name,
-                            style: TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          Text(
-                            order.restaurant.name,
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          Text(
-                            order.date,
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
+                  SizedBox(
+                    height: 3.0.h,
+                  ),
+                  FormBuilderTextField(
+                    controller: requestController,
+                    name: 'request',
+                    decoration: InputDecoration(
+                        labelText: 'Request',
+                        icon: Icon(Icons.medical_services_outlined)),
+                  ),
+                  SizedBox(
+                    height: 3.0.h,
+                  ),
+                  FormBuilderTextField(
+                    controller: paymentController,
+                    name: 'payment',
+                    decoration: InputDecoration(
+                        labelText: 'Payment', icon: Icon(Icons.money)),
                   ),
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(right: 20.0),
-              width: 48.0,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              child: IconButton(
-                icon: Icon(Icons.add),
-                iconSize: 30.0,
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            )
-          ],
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Text('Recent Orders',
-                  style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.2))),
-          Container(
-            height: 120.0,
-            child: ListView.builder(
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.only(left: 10.0),
-              scrollDirection: Axis.horizontal,
-              itemCount: currentUser.orders.length,
-              itemBuilder: (BuildContext context, int index) {
-                Order order = currentUser.orders[index];
-                return _buildRecentOrder(context, order);
-              },
+            // Image(image: Image.file('')),
+            SizedBox(
+              height: 10,
             ),
-          ),
-        ]);
-  }
-}
+            Container(
+              child: Material(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    splashColor: Colors.blue[900],
+                    // highlightColor: Colors.amber,
 
-class RestoList extends StatelessWidget {
-  _build(BuildContext context, Restaurant restaurant) {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            width: 1.0,
-            color: Colors.grey[200],
-          ),
-        ),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: Row(
-                  children: <Widget>[
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: Image(
-                          image: AssetImage(restaurant.imageUrl),
-                        ))
-                  ],
-                ),
-              )
-            ]),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Text('Nearby Restaurants',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2))),
-        Container(
-          height: 100.0,
-          // child: ListView.builder(
-          //   physics: BouncingScrollPhysics(),
-          //   padding: EdgeInsets.only(left: 10.0),
-          //   scrollDirection: Axis.vertical,
-          //   itemCount: restaurants.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     Restaurant restaurant = restaurants[index];
-          //     print(restaurant.name);
-          //     print('----');
-          //     print(restaurant.name);
-          //     return _build(context, restaurant);
-          //   },
-          // ),
-        )
-      ],
-    );
-  }
+                    onTap: () async {
+                      // if (userHomeBloc.file.value == null) {
+                      //   return;
+                      // }
+                      // String id = Uuid().v4();
+                      // final loc = new LocationModel(
+                      //     id: id,
+                      //     lat: userHomeBloc.mainLatLng.latitude,
+                      //     long: userHomeBloc.mainLatLng.longitude,
+                      //     imageName: id,
+                      //     locName: nameController.text,
+                      //     locDate: new DateTime.now(),
+                      //     type: 1,
+                      //     info: requestController.text);
+                      // await userHomeBloc.sendData(
+                      //     loc: loc,
+                      //     folderName: 'uberLocations',
+                      //     file: userHomeBloc.file.value,
+                      //     imageName: id);
+                    },
+                    child: Container(
+                      // color: Theme.of(context).primaryColor,
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          "Send Data",
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ),
+                  ),
+                  elevation: 10,
+                  color: Colors.purple),
+            ),
+          ]),
+    ),
+  );
 }

@@ -1,91 +1,121 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:new_practice/mock_data/restaurant_data.dart';
 import 'package:new_practice/models/restaurant.dart';
 import 'package:new_practice/screens/restaurant/resto_list.dart';
 import 'package:new_practice/screens/restaurant/resto_details.dart';
 import 'package:new_practice/widgets/search_bar_resto.dart';
+import 'package:new_practice/widgets/text/text_deco.dart';
+import 'package:sizer/sizer.dart';
 
-class RestoPage extends StatefulWidget {
-  RestoPage({Key key}) : super(key: key);
+class EcommerceMain extends StatefulWidget {
+  EcommerceMain({Key key}) : super(key: key);
 
   @override
-  RestoPageState createState() => RestoPageState();
+  EcommerceMainState createState() => EcommerceMainState();
 }
 
-class RestoPageState extends State<RestoPage> {
+class EcommerceMainState extends State<EcommerceMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              elevation: 10.0,
-              expandedHeight: 50.0,
-              floating: true,
-              pinned: false,
-              snap: true,
-              leading: IconButton(
-                  icon: Icon(Icons.account_circle),
-                  iconSize: 30.0,
-                  onPressed: () {}),
-              backgroundColor: Colors.deepOrange,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text("Restaurants"),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(
-                    'Cart (${currentUser.cart.length})',
-                    style: TextStyle(color: Colors.white, fontSize: 20.0),
-                  ),
-                  onPressed: () {
-                    Modular.link.pushNamed('/cart');
-                  },
-                )
-              ],
-            )
-          ];
-        },
-        body: ListView(
-          physics: BouncingScrollPhysics(),
-          children: <Widget>[
-            SearchForm(),
-            RecentOrders(),
-            // RestoList(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Nearby Restaurants',
-                    style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.2),
-                  ),
-                ),
-                _buildRestaurants(context),
-              ],
-            ),
-            InkWell(
-              onTap: () {
-                // Navigator.pop(context);
-                Modular.to.pushReplacementNamed('/home');
-              },
-              child: Container(
-                height: 100,
-                child: Center(child: Text('Main Menu')),
+        body: NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[
+          SliverAppBar(
+            elevation: 10.0,
+            expandedHeight: 50.0,
+            floating: true,
+            pinned: false,
+            snap: true,
+            leading: IconButton(
+                icon: Icon(Icons.account_circle),
+                iconSize: 30.0,
+                onPressed: () {}),
+            backgroundColor: Colors.grey[200],
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
+              // titlePadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              title: Text(
+                "Fruits and vegetables",
+                style: TextStyle1(size: 2.5.h, color: Colors.white),
               ),
             ),
-          ],
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.sort),
+                onPressed: () {},
+              )
+            ],
+          )
+        ];
+      },
+      body:
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          Stack(children: [
+        Positioned(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              'Nearby Restaurants',
+              style: TextStyle(
+                  fontSize: 3.0.h,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.2),
+            ),
+          ),
         ),
-      ),
-    );
+        StaggeredGridView.countBuilder(
+          crossAxisCount: 4,
+          // padding: EdgeInsets.all(10),
+          itemCount: 20,
+          itemBuilder: (BuildContext context, int index) => new Container(
+            decoration: BoxDecoration(
+                color: Colors.blue, borderRadius: BorderRadius.circular(10.0)),
+            child: Text('text'),
+          ),
+          staggeredTileBuilder: (int index) => new StaggeredTile.count(2, 2),
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0,
+        ),
+        Positioned(
+          bottom: 0,
+          // top: 0,
+          // width: 0,
+          // width: double.infinity,
+          // top: ,
+          // left: 10,
+          // bottom: 0,
+          child: Container(
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.local_grocery_store_outlined,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {},
+                  )
+                ],
+              ),
+              color: Colors.black,
+              height: 10.0.h,
+              width: MediaQuery.of(context).size.width),
+        )
+      ]),
+      // InkWell(
+      //   onTap: () {
+      //     // Navigator.pop(context);
+      //     Modular.to.pushReplacementNamed('/home');
+      //   },
+      //   child: Container(
+      //     height: 100,
+      //     child: Center(child: Text('Main Menu')),
+      //   ),
+      // ),
+    ));
   }
 }
 

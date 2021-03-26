@@ -17,6 +17,7 @@ import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import '../main.dart';
 import 'carousel_demo_routing.dart';
+import 'ecommerce-module.dart';
 import 'page1_routing.dart';
 import 'qr_module.dart';
 import 'uber_module.dart';
@@ -65,6 +66,7 @@ class MainRouting extends ChildModule {
         ModularRouter('/zoom_clone', module: ZoomModule()),
         ModularRouter('/uber', module: UberModule()),
         ModularRouter('/qr', module: QrModule()),
+        ModularRouter('/ecommerce', module: EcommerceModule()),
       ];
 
   static Inject get to => Inject<MainModule>.of();

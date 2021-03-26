@@ -3,16 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:new_practice/models/food.dart';
 import 'package:new_practice/models/restaurant.dart';
 
-class RestaurantDetails extends StatefulWidget {
+class EcommerceDetails extends StatefulWidget {
   final Restaurant restaurant;
 
-  RestaurantDetails({this.restaurant});
+  EcommerceDetails({this.restaurant});
 
   @override
-  _RestaurantDetailsState createState() => _RestaurantDetailsState();
+  _EcommerceDetailsState createState() => _EcommerceDetailsState();
 }
 
-class _RestaurantDetailsState extends State<RestaurantDetails> {
+class _EcommerceDetailsState extends State<EcommerceDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

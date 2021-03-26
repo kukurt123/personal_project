@@ -84,6 +84,10 @@ class _DrawerMainState extends State<DrawerMain> {
             ),
           ),
           DrawerListItem(
+              icon: Icons.local_grocery_store,
+              text: 'Ecommerce',
+              routeName: '/ecommerce'),
+          DrawerListItem(
               icon: Icons.qr_code, text: 'Qr Codes', routeName: '/qr'),
           DrawerListItem(
               icon: Icons.directions_bike,
