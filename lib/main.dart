@@ -16,13 +16,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  Future<void> FirebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    // If you're going to use other Firebase services in the background, such as Firestore,
-    // make sure you call `initializeApp` before using other Firebase services.
-    await Firebase.initializeApp();
-    print('Handling a background message ${message.messageId}');
-  }
-
   FirebaseMessaging.onBackgroundMessage(FirebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
@@ -42,6 +35,13 @@ Future<void> main() async {
   ));
 }
 
+Future<void> FirebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  print('Handling a background message ${message.messageId}');
+}
+
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
   'High Importance Notifications', // title
@@ -57,7 +57,7 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // void test() async {
     // }
-    // mainBloc.firebaseOnMessage();
+
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return OrientationBuilder(
