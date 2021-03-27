@@ -131,16 +131,6 @@ Column followingWidget() {
           },
         ),
       ),
-      // Padding(
-      //   padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-      //   child: Align(
-      //     alignment: Alignment.centerLeft,
-      //     child: Text(
-      //       'Posts',
-      //       style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-      //     ),
-      //   ),
-      // ),
     ],
   );
 }
