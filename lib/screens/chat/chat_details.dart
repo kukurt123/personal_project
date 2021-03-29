@@ -8,15 +8,15 @@ import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stepper_counter_swipe/stepper_counter_swipe.dart';
 
-class EcommerceDetail extends StatefulWidget {
+class ChatDetails extends StatefulWidget {
   final Fruit fruit;
-  EcommerceDetail({Key key, this.fruit}) : super(key: key);
+  ChatDetails({Key key, this.fruit}) : super(key: key);
 
   @override
-  _EcommerceDetailState createState() => _EcommerceDetailState();
+  _ChatDetailsState createState() => _ChatDetailsState();
 }
 
-class _EcommerceDetailState extends State<EcommerceDetail> {
+class _ChatDetailsState extends State<ChatDetails> {
   final ecommerceBloc = Modular.get<EcommerceBloc>();
 
   @override

@@ -22,7 +22,7 @@ showBottomSheetModal(
 }
 
 void showAsBottomSheet(
-    {BuildContext context, double height, Widget widget}) async {
+    {BuildContext context, double height, Widget widget, Color color}) async {
   final result = await showSlidingBottomSheet(context, builder: (context) {
     return SlidingSheetDialog(
       elevation: 8,
@@ -34,7 +34,7 @@ void showAsBottomSheet(
       ),
       builder: (context, state) {
         return Material(
-          color: Theme.of(context).cardColor,
+          color: color ?? Theme.of(context).cardColor,
           child: Column(
             children: [
               Padding(

@@ -10,11 +10,15 @@ import 'package:new_practice/models/ecommerce/fruit_total.dart';
 import 'package:new_practice/models/restaurant.dart';
 import 'package:new_practice/widgets/clip_paths/profile_clipper.dart';
 import 'package:new_practice/widgets/text/text_deco.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sizer/sizer.dart';
+
+import 'ecommerce_billing.dart';
 
 class EcommerceMain extends StatefulWidget {
   EcommerceMain({Key key}) : super(key: key);
   final ecommerceBloc = Modular.get<EcommerceBloc>();
+  var deleteHeroKey = BehaviorSubject<bool>.seeded(false);
 
   @override
   EcommerceMainState createState() => EcommerceMainState();
@@ -37,7 +41,7 @@ class EcommerceMainState extends State<EcommerceMain> {
                 icon: Icon(Icons.account_circle),
                 iconSize: 30.0,
                 onPressed: () {}),
-            backgroundColor: Colors.grey[200],
+            backgroundColor: Colors.grey[800],
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: false,
               // titlePadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -55,22 +59,7 @@ class EcommerceMainState extends State<EcommerceMain> {
           )
         ];
       },
-      body:
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          Stack(children: [
-        // Positioned(
-        //   // bottom: 0,
-        //   child: Padding(
-        //     padding: EdgeInsets.fromLTRB(2.0.w, 3.0.h, 2.0.w, 5.0.h),
-        //     child: Text(
-        //       'Nearby Restaurants',
-        //       style: TextStyle(
-        //           fontSize: 3.0.h,
-        //           fontWeight: FontWeight.w600,
-        //           letterSpacing: 1.2),
-        //     ),
-        //   ),
-        // ),
+      body: Stack(children: [
         StaggeredGridView.countBuilder(
           padding: EdgeInsets.fromLTRB(5, 2.0.h, 5, 10.0.h),
           crossAxisCount: 4,
@@ -86,28 +75,18 @@ class EcommerceMainState extends State<EcommerceMain> {
           mainAxisSpacing: 10.0,
           crossAxisSpacing: 10.0,
         ),
-        // Positioned(
-        //   bottom: 0,
-        //   child: ClipPath(
-        //     clipper: CurvedClipperTop(),
-        //     child: Container(
-        //         child: _cartContainer(),
-        //         color: Colors.black,
-        //         height: 10.0.h,
-        //         width: MediaQuery.of(context).size.width),
-        //   ),
-        // )
+        Positioned(
+          bottom: 0,
+          child: ClipPath(
+            clipper: CurvedClipperTop(),
+            child: Container(
+                child: _cartContainer(),
+                color: Colors.black,
+                height: 10.0.h,
+                width: MediaQuery.of(context).size.width),
+          ),
+        ),
       ]),
-      // InkWell(
-      //   onTap: () {
-      //     // Navigator.pop(context);
-      //     Modular.to.pushReplacementNamed('/home');
-      //   },
-      //   child: Container(
-      //     height: 100,
-      //     child: Center(child: Text('Main Menu')),
-      //   ),
-      // ),
     ));
   }
 
@@ -115,19 +94,35 @@ class EcommerceMainState extends State<EcommerceMain> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          SizedBox(
+            width: 2.0.w,
+          ),
           IconButton(
             icon: Icon(
               Icons.local_grocery_store_outlined,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              print('showButtonSheet....');
+              showButtonSheet(context);
+            },
           ),
           StreamBuilder(
               stream: widget.ecommerceBloc.fruitListStream.stream,
               builder: (context, snapshot) {
-                return _basketContainer();
-              })
+                if (widget.ecommerceBloc.cartGrouped.length != 0) {
+                  return Expanded(child: _basketContainer());
+                  // return Text('test', style: TextStyle(color: Colors.red));
+                }
+                return Text('',
+                    style: TextStyle(color: Theme.of(context).primaryColor));
+              }),
+          SizedBox(
+            width: 4.0.w,
+          ),
         ],
       ),
     );
@@ -140,71 +135,145 @@ class EcommerceMainState extends State<EcommerceMain> {
       itemCount: widget.ecommerceBloc.cartGrouped.length,
       itemBuilder: (BuildContext context, int index) {
         FruitTotal fruit = widget.ecommerceBloc.cartGrouped[index];
-        return GestureDetector(
-          onTap: () {},
-          child: Container(
-            margin: EdgeInsets.all(10.0),
-            width: 65,
-            height: 65,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  offset: Offset(0, 2),
-                  blurRadius: 6.0,
-                ),
-              ],
-              border:
-                  Border.all(width: 2, color: Theme.of(context).primaryColor),
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(fruit.imageLocation),
-              ),
-            ),
-          ),
+        print('ecommerce main...' +
+            fruit.imageLocation +
+            widget.ecommerceBloc.heroTag);
+        return Dismissible(
+          key: Key(fruit.totalId),
+          onDismissed: (direction) {
+            print('onDismissed');
+
+            widget.ecommerceBloc.removeCartGrouped(fruit);
+            widget.deleteHeroKey.add(false);
+          },
+          onResize: () {
+            widget.deleteHeroKey.sink.add(true);
+            print('onResize...');
+          },
+          secondaryBackground:
+              Icon(Icons.delete_forever_sharp, color: Colors.red),
+          background: Expanded(
+              child: Container(
+            child:
+                Text('sdaf jdsalfk jsd', style: TextStyle1(color: Colors.blue)),
+            color: Colors.red,
+          )),
+          resizeDuration: Duration(seconds: 1),
+          direction: DismissDirection.up,
+          child: StreamBuilder<bool>(
+              stream: widget.deleteHeroKey.stream,
+              builder: (context, snapshot) {
+                print('snapshot data' + snapshot.data.toString());
+                return Hero(
+                  tag: fruit.imageLocation +
+                      (snapshot.data == true
+                          ? ''
+                          : widget.ecommerceBloc.heroTag ?? ''),
+                  child: Stack(children: [
+                    Positioned(
+                      top: 0,
+                      child: Text(
+                        '${fruit.qty}',
+                        style: TextStyle1(
+                          color: Colors.white,
+                          size: 2.5.h,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(2.0),
+                      width: 65,
+                      height: 65,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0, 2),
+                            blurRadius: 6.0,
+                          ),
+                        ],
+                        border: Border.all(width: 2, color: Colors.white),
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(fruit.imageLocation),
+                        ),
+                      ),
+                    ),
+                    // Positioned(
+                    //   right: 0,
+                    //   child: GestureDetector(
+                    //     child: Container(
+                    //       child: Align(
+                    //           alignment: Alignment.center,
+                    //           child: Icon(
+                    //             Icons.close,
+                    //             color: Colors.white,
+                    //           )),
+                    //       margin: EdgeInsets.all(2.0),
+                    //       width: 25,
+                    //       height: 25,
+                    //       decoration: BoxDecoration(
+                    //         color: Colors.red,
+                    //         boxShadow: [
+                    //           BoxShadow(
+                    //             color: Colors.black,
+                    //             offset: Offset(0, 1),
+                    //             blurRadius: 3.0,
+                    //           ),
+                    //         ],
+                    //         shape: BoxShape.circle,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                  ]),
+                );
+              }),
         );
       },
     );
   }
-}
 
-Widget fruitContent(Fruit fruit) {
-  return GestureDetector(
-    onTap: () {
-      Modular.link.pushNamed('/details', arguments: fruit);
-    },
-    child: Padding(
-      padding: EdgeInsets.all(15),
-      child: Column(
-        // mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Hero(
-              tag: fruit.image,
-              child: Image(
-                height: 13.0.h,
-                // width: 10.0.w,
-                image: AssetImage(fruit.image),
-                fit: BoxFit.cover,
+  Widget fruitContent(Fruit fruit) {
+    return GestureDetector(
+      onTap: () {
+        widget.ecommerceBloc.heroTag = '';
+        print('heroTag...' + widget.ecommerceBloc.heroTag ?? '');
+        Modular.link.pushNamed('/details', arguments: fruit);
+      },
+      child: Padding(
+        padding: EdgeInsets.all(15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Hero(
+                tag: fruit.image,
+                child: Image(
+                  height: 13.0.h,
+                  // width: 10.0.w,
+                  image: AssetImage(fruit.image),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 1.0.h),
-          Text('P${fruit.price}', style: TextStyle1(size: 2.5.h, isBold: true)),
-          SizedBox(height: 0.3.h),
-          Text('${fruit.name}', style: TextStyle1(size: 1.5.h, isBold: true)),
-          SizedBox(height: 0.3.h),
-          Expanded(
-            child: Text('${fruit.gram}',
-                style: TextStyle1(
-                  size: 1.5.h,
-                )),
-          ),
-        ],
+            SizedBox(height: 1.0.h),
+            Text('P${fruit.price.round()}',
+                style: TextStyle1(size: 2.5.h, isBold: true)),
+            SizedBox(height: 0.3.h),
+            Text('${fruit.name}', style: TextStyle1(size: 1.5.h, isBold: true)),
+            SizedBox(height: 0.3.h),
+            Expanded(
+              child: Text('${fruit.gram}',
+                  style: TextStyle1(
+                    size: 1.5.h,
+                  )),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

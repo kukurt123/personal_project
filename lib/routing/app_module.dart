@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:new_practice/bloc/chat_bloc.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/bloc/page1_1/page1_1_bloc.dart';
 import 'package:new_practice/bloc/page1_3/page1_3rx.dart';
@@ -17,6 +18,7 @@ import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import '../main.dart';
 import 'carousel_demo_routing.dart';
+import 'chat_module.dart';
 import 'ecommerce-module.dart';
 import 'page1_routing.dart';
 import 'qr_module.dart';
@@ -35,6 +37,7 @@ class AppModule extends MainModule {
         Bind((i) => EmailSignInChangeModel(), singleton: false),
         Bind((i) => QrBloc()),
         Bind((i) => UberUserBloc()),
+        Bind((i) => ChatBloc()),
       ];
   @override
   Widget get bootstrap => AppWidget();
@@ -67,6 +70,7 @@ class MainRouting extends ChildModule {
         ModularRouter('/uber', module: UberModule()),
         ModularRouter('/qr', module: QrModule()),
         ModularRouter('/ecommerce', module: EcommerceModule()),
+        ModularRouter('chat', module: ChatModule())
       ];
 
   static Inject get to => Inject<MainModule>.of();

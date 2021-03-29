@@ -94,20 +94,8 @@ _buildRestaurants(BuildContext context) {
   restaurants.forEach((Restaurant restaurant) {
     restaurantList.add(
       GestureDetector(
-        onTap: () => {
-          // Navigator.pop(context
-          Modular.link.pushNamed('/details', arguments: restaurant)
-        },
-        // onTap: () => Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (_) => restaurant.name.contains('ers')
-        //           ? DetailPage(
-        //               index: 10,
-        //               restaurant: restaurant,
-        //             )
-        //           : RestaurantDetails(restaurant: restaurant)),
-        // ),
+        onTap: () =>
+            {Modular.link.pushNamed('/details', arguments: restaurant)},
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           decoration: BoxDecoration(

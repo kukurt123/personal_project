@@ -4,7 +4,7 @@ import 'package:new_practice/models/qr/requestqr.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
 import 'package:rxdart/rxdart.dart';
 
-class EcommerceBloc {
+class ChatBloc {
   bool isLoaded = false;
   final cart = List<Fruit>();
   final cartGrouped = List<FruitTotal>();

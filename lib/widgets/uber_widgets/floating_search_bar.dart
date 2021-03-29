@@ -85,18 +85,6 @@ Widget buildFloatingSearchBar(BuildContext context) {
     ],
     builder: (context, transition) {
       return Center(child: Text(random.toString()));
-      // ClipRRect(
-      //   borderRadius: BorderRadius.circular(8),
-      //   child: Material(
-      //     color: Colors.white,
-      //     elevation: 4.0,
-      //     child: Column(
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: Colors.accents.map((color) {
-      //         return Container(height: 112, color: color);
-      //       }).toList(),
-      //     ),
-      //   ),
       // );
     },
   );

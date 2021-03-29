@@ -85,6 +85,10 @@ class _DrawerMainState extends State<DrawerMain> {
           ),
           DrawerListItem(
               icon: Icons.local_grocery_store,
+              text: 'Chat App',
+              routeName: '/chat'),
+          DrawerListItem(
+              icon: Icons.local_grocery_store,
               text: 'Ecommerce',
               routeName: '/ecommerce'),
           DrawerListItem(

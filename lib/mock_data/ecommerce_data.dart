@@ -18,7 +18,7 @@ final List<Fruit> fruits = [
       name: 'Banana',
       gram: '760g',
       id: '3',
-      price: 80),
+      price: 80.50),
   Fruit(
       image: 'assets/images/cherry.png',
       name: 'Cherry',

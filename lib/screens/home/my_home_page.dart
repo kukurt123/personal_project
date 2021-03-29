@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Container(
           color: Theme.of(context).primaryColor,
           child: Center(
-              child: Text('WELCOME!',
+              child: Text("Kurt's Sample Projects",
                   style:
                       TextStyle1(size: 30, color: Colors.white, isBold: true))),
         ));
