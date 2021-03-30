@@ -1,12 +1,14 @@
-import 'package:flutter/widgets.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'users.freezed.dart';
+part 'users.g.dart';
 
-class Users {
-  Users(
-      {@required this.uid,
-      @required this.photoUrl,
-      @required this.displayName});
+@freezed
+abstract class Users with _$Users {
+  factory Users({
+    String uid,
+    String photoUrl,
+    String displayName,
+  }) = _Users;
 
-  final String uid;
-  final String photoUrl;
-  final String displayName;
+  factory Users.fromJson(Map<String, dynamic> json) => _$UsersFromJson(json);
 }

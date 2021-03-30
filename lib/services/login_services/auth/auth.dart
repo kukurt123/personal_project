@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/models/uber_model/users.dart';
+import 'package:new_practice/services/login_services/firebase/firebase_chat.dart';
+import 'package:new_practice/services/login_services/firebase/firebase_user.dart';
 import 'package:rxdart/subjects.dart';
 
 abstract class AuthBase {
@@ -26,6 +32,8 @@ abstract class AuthBase {
 class AuthService {
   final _firebaseAuth = FirebaseAuth.instance;
   BehaviorSubject<bool> isLoading = BehaviorSubject<bool>();
+  final firebaseUsers = Modular.get<FirebaseUsers>();
+  final mainBloc = Modular.get<MainBloc>();
 
   checkChanges() {
     onAuthStateChanged.listen((x) {
@@ -41,8 +49,23 @@ class AuthService {
 
   Users _userFromFirebase(User user) {
     if (user == null) return null;
-    return Users(
+    Users users = Users(
         uid: user.uid, displayName: user.displayName, photoUrl: user.photoURL);
+    // firebaseChat.uploadImage();
+    // asink() async {
+    firebaseUsers.setUser(users);
+    return users;
+  }
+
+  downloadProfileImage(User user) async {
+    await mainBloc
+        .downloadImageUrl(url: user.photoURL, name: user.displayName)
+        .then((x) {
+      final file = File(x);
+      final path = mainBloc.uploadImage(
+          folderName: 'profile', imageName: user.uid, file: file);
+      mainBloc.downloadImage(folderName: 'profile', imagePath: path);
+    });
   }
 
   // @override

@@ -3,26 +3,6 @@ import 'package:new_practice/models/qr/requestqr.dart';
 
 import '../../api-path.dart';
 import '../firestore.service.dart';
-// import 'package:torrent/models/entry.dart';
-// import 'package:torrent/models/job.dart';
-// import 'package:torrent/services/api-path.dart';
-// import 'package:torrent/services/firebase/firestore.service.dart';
-
-// abstract class FirebaseDb {
-//   Future<void> setJob(Job job);
-
-//   Future<void> deleteJob(Job job);
-
-//   Stream<List<Job>> jobsStream();
-
-//   Future<void> setEntry(Entry entry);
-
-//   Future<void> deleteEntry(Entry entry);
-
-//   Stream<List<Entry>> entriesStream({Job job});
-
-//   Stream<Job> jobStream({@required String jobId});
-// }
 
 String docIdFromCurrentDate() => DateTime.now().toIso8601String();
 
@@ -49,9 +29,9 @@ class FirestoreQr {
   Stream<List<RequestQr>> requestsStream() => _service.collectionStream(
         path: RequestFirebaseApi.requests(uid),
         builder: (data, documentId) {
+          print('requestStream...${data.length}');
           RequestQr req = RequestQr.fromJson(data);
           req.copyWith.call(id: documentId);
-          print('copy with' + req.toString());
           return req;
         },
       );

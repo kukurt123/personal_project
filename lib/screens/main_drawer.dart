@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/bloc/page1_1/page1_1_barrel.dart';
+import 'package:new_practice/bloc/uber_bloc/uber-user_bloc.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
 import 'package:new_practice/services/firebase_messaging/firebase_messaging_background_handler.dart';
+import 'package:new_practice/services/login_services/auth/auth.dart';
+import 'package:new_practice/utils/alert-dialog/alert-dialogs.dart';
 import 'package:new_practice/widgets/extras.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -29,6 +32,8 @@ class _DrawerMainState extends State<DrawerMain> {
   @override
   Widget build(BuildContext context) {
     final mainBloc = Modular.get<MainBloc>();
+    final uberUserBloc = Modular.get<UberUserBloc>();
+    final auth = Modular.get<AuthService>();
     return Container(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -137,7 +142,25 @@ class _DrawerMainState extends State<DrawerMain> {
             },
           ),
           DrawerListItem(
-              icon: Icons.folder_rounded, text: 'Page 2', routeName: '/page2')
+              icon: Icons.folder_rounded, text: 'Page 2', routeName: '/page2'),
+          ListTile(
+            title: Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Text('Logout'),
+                )
+              ],
+            ),
+            onTap: () {
+              confirmDialogUtil(
+                  context, ['Logout', 'Are you sure you want to logout?'], () {
+                Navigator.pop(context);
+                uberUserBloc.isLoaded = false;
+                auth.signOut();
+              });
+            },
+          )
         ],
       ),
     );

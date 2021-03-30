@@ -12,10 +12,6 @@ class SignInManager {
     isLoading.sink.add(value);
   }
 
-  // setAuth(AuthService value) {
-  //   auth.sink.add(value);
-  // }
-
   Future<Users> _signIn(Future<Users> Function() signInMethod) async {
     try {
       isLoading.value = true;

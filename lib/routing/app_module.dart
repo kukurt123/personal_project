@@ -16,6 +16,8 @@ import 'package:new_practice/screens/login/login.dart';
 import 'package:new_practice/screens/page2.dart';
 import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
+import 'package:new_practice/services/login_services/firebase/firebase_main.dart';
+import 'package:new_practice/services/login_services/firebase/firebase_user.dart';
 import '../main.dart';
 import 'carousel_demo_routing.dart';
 import 'chat_module.dart';
@@ -29,6 +31,8 @@ class AppModule extends MainModule {
   @override
   // TODO: implement binds
   List<Bind> get binds => [
+        Bind((i) => FirebaseMain()),
+        Bind((i) => FirebaseUsers()),
         Bind((i) => Page1Bloc(repo: new Page1Repository())),
         Bind((i) => Page1_3rx(), singleton: true),
         Bind((i) => MainBloc()),

@@ -1,8 +1,11 @@
+import 'dart:io';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:new_practice/models/ecommerce/fruit.dart';
 import 'package:new_practice/models/ecommerce/fruit_total.dart';
-import 'package:new_practice/models/qr/requestqr.dart';
-import 'package:new_practice/models/social_media/socialuser.dart';
+import 'package:new_practice/services/login_services/firebase/firebase_chat.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:dash_chat/dash_chat.dart';
 
 class ChatBloc {
   bool isLoaded = false;
@@ -12,50 +15,51 @@ class ChatBloc {
   String id = '';
   bool done = false;
   String heroTag = '';
+  final picker = ImagePicker();
+  ChatUser myInfo;
+  ChatUser chatMateInfo;
+  List<ChatMessage> messages = List<ChatMessage>();
 
-  changefruitListStrem() {
-    fruitListStream.add(!fruitListStream.value);
-  }
+  final chatFirebase = Modular.get<FirebaseChat>();
 
-  addOnFruits(Fruit fruit) {
-    cart.add(fruit);
-    changefruitListStrem();
-  }
+  Future<void> sendImage() async {
+    final result = await picker.getImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+      maxHeight: 400,
+      maxWidth: 400,
+    );
+    if (result != null) {
+      final File file = File(
+        result.path,
+      );
 
-  removeOnFruits(Fruit fruit) {
-    cart.removeAt(int.parse(fruit.id) - 1);
-    changefruitListStrem();
-  }
+      final imageSent = await chatFirebase.uploadImage(
+          folderName: 'chat', file: file, imageName: id);
+      final imagePath = await chatFirebase.downloadImage(
+          'chat', imageSent.snapshot.ref.fullPath);
 
-  addCartGrouped(Fruit fruit) {
-    FruitTotal fruitTotal;
-    if (cartGrouped.any((fru) {
-          fruitTotal = fru;
-          return fru.totalId == fruit.id;
-        }) &&
-        cartGrouped.isNotEmpty) {
-      fruitTotal = FruitTotal(
-          totalId: fruitTotal.totalId,
-          imageLocation: fruitTotal.imageLocation,
-          totalName: fruitTotal.totalName,
-          qty: fruitTotal.qty + fruit.fruitQty,
-          totalPrice: fruitTotal.totalPrice + fruit.price);
-      cartGrouped[cartGrouped.indexWhere((x) => x.totalId == fruit.id)] =
-          fruitTotal;
+      ChatMessage message =
+          ChatMessage(text: "", user: myInfo, image: imagePath);
+      addMessage(message);
     } else {
-      final total = FruitTotal(
-          totalId: fruit.id,
-          imageLocation: fruit.image,
-          totalName: fruit.name,
-          qty: fruit.fruitQty,
-          totalPrice: fruit.price);
-      cartGrouped.add(total);
+      return null;
     }
-    changefruitListStrem();
   }
 
-  removeCartGrouped(FruitTotal fruitTotal) {
-    cartGrouped.remove(fruitTotal);
-    changefruitListStrem();
+  Future<void> addMessage(ChatMessage message) {
+    return chatFirebase.setMessage(message, getIds());
+  }
+
+  Future<ChatUser> getUserInfo() {
+    return chatFirebase.userInfo();
+  }
+
+  Stream<List<ChatMessage>> getChats() {
+    return chatFirebase.chatsStream(getIds());
+  }
+
+  String getIds() {
+    return myInfo.uid + chatMateInfo.uid;
   }
 }

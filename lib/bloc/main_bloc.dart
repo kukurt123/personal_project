@@ -1,14 +1,19 @@
 import 'dart:convert';
-
+import 'dart:io' show File, Platform;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
+import 'package:new_practice/services/login_services/firebase/firebase_main.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:new_practice/main.dart';
 import 'package:time/time.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MainBloc {
+  final firebaseMain = Modular.get<FirebaseMain>();
   final currentUser = new BehaviorSubject<SocialUser>();
 
   changeUser({SocialUser user}) {
@@ -104,4 +109,29 @@ class MainBloc {
   //   print('subtracting');
   //   count.sink.add(count.value == null ? 1 : count.value - 1);
   // }
+  Future<String> downloadImageUrl({String url, String name}) async {
+    final directory = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    print('directory path....wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww');
+    print(directory.path);
+    final taskId = await FlutterDownloader.enqueue(
+      url: url,
+      fileName: name,
+      savedDir: directory.path,
+      showNotification: false,
+      openFileFromNotification: false,
+    );
+    print(taskId);
+    return directory.path + '/$name';
+  }
+
+  uploadImage({File file, String folderName, String imageName, String url}) {
+    firebaseMain.uploadImage(
+        file: file, folderName: folderName, imageName: imageName, url: url);
+  }
+
+  Future<String> downloadImage({String imagePath, String folderName}) async {
+    return await firebaseMain.downloadImage(imagePath, folderName);
+  }
 }
