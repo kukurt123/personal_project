@@ -32,7 +32,7 @@ abstract class AuthBase {
 class AuthService {
   final _firebaseAuth = FirebaseAuth.instance;
   BehaviorSubject<bool> isLoading = BehaviorSubject<bool>();
-  final firebaseUsers = Modular.get<FirebaseUsers>();
+  final firebaseUsers = FirebaseUsers.instance;
   final mainBloc = Modular.get<MainBloc>();
 
   checkChanges() {

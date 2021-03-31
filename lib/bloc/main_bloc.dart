@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io' show File, Platform;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_main.dart';
+import 'package:ntp/ntp.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:new_practice/main.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MainBloc {
-  final firebaseMain = Modular.get<FirebaseMain>();
+  // final firebaseMain = Modular.get<FirebaseMain>();
   final currentUser = new BehaviorSubject<SocialUser>();
 
   changeUser({SocialUser user}) {
@@ -127,11 +127,22 @@ class MainBloc {
   }
 
   uploadImage({File file, String folderName, String imageName, String url}) {
-    firebaseMain.uploadImage(
+    FirebaseMain.instance.uploadImage(
         file: file, folderName: folderName, imageName: imageName, url: url);
   }
 
   Future<String> downloadImage({String imagePath, String folderName}) async {
-    return await firebaseMain.downloadImage(imagePath, folderName);
+    return await FirebaseMain.instance.downloadImage(imagePath, folderName);
+  }
+
+  Future<DateTime> getDateNowNTP() async {
+    DateTime date;
+    await NTP
+        .now(
+          lookUpAddress: 'time.google.com',
+          port: 123,
+        )
+        .then((x) => date = x);
+    return date;
   }
 }

@@ -11,8 +11,8 @@ class LocationFirebaseApi {
 }
 
 class ChatFirebaseApi {
-  static String chat(String uid, String id) => 'chat/$uid/$id';
-  static String chats(String uid) => 'chat/$uid';
+  static String chat(String uid, String id) => 'chat/$uid/message/$id';
+  static String chats(String uid) => 'chat/$uid/message';
 }
 
 class UserFirebaseApi {

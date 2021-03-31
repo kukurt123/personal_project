@@ -7,8 +7,10 @@ class ImageWithState extends StatelessWidget {
   final Future<String> futureUrl;
   final double height;
   final double width;
+  final BoxShape boxShape;
 
-  const ImageWithState({Key key, this.futureUrl, this.height, this.width})
+  const ImageWithState(
+      {Key key, this.futureUrl, this.height, this.width, this.boxShape})
       : super(key: key);
 
   @override
@@ -27,6 +29,8 @@ class ImageWithState extends StatelessWidget {
               width: width,
               height: height,
               fit: BoxFit.fill,
+              enableMemoryCache: true,
+              shape: boxShape,
               cache: true,
               loadStateChanged: (ExtendedImageState state) {
                 // print('url    $url');

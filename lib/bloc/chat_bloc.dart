@@ -7,6 +7,8 @@ import 'package:new_practice/services/login_services/firebase/firebase_chat.dart
 import 'package:rxdart/rxdart.dart';
 import 'package:dash_chat/dash_chat.dart';
 
+import 'main_bloc.dart';
+
 class ChatBloc {
   bool isLoaded = false;
   final cart = List<Fruit>();
@@ -19,8 +21,10 @@ class ChatBloc {
   ChatUser myInfo;
   ChatUser chatMateInfo;
   List<ChatMessage> messages = List<ChatMessage>();
+  var messagesStream = BehaviorSubject<List<ChatMessage>>();
 
   final chatFirebase = Modular.get<FirebaseChat>();
+  final mainBloc = Modular.get<MainBloc>();
 
   Future<void> sendImage() async {
     final result = await picker.getImage(
@@ -39,15 +43,19 @@ class ChatBloc {
       final imagePath = await chatFirebase.downloadImage(
           'chat', imageSent.snapshot.ref.fullPath);
 
-      ChatMessage message =
-          ChatMessage(text: "", user: myInfo, image: imagePath);
+      ChatMessage message = ChatMessage(
+          text: "",
+          user: myInfo,
+          image: imagePath,
+          createdAt: await mainBloc.getDateNowNTP());
       addMessage(message);
     } else {
       return null;
     }
   }
 
-  Future<void> addMessage(ChatMessage message) {
+  Future<void> addMessage(ChatMessage message) async {
+    message.createdAt = await mainBloc.getDateNowNTP();
     return chatFirebase.setMessage(message, getIds());
   }
 
@@ -55,11 +63,57 @@ class ChatBloc {
     return chatFirebase.userInfo();
   }
 
+  Stream<List<ChatMessage>> zipStreamSample() {
+    return ZipStream([
+      chatFirebase.chatsStream(getReverseIds()),
+      chatFirebase.chatsStream(getIds()),
+    ], (a) {
+      return a.first + a.last;
+    });
+  }
+
   Stream<List<ChatMessage>> getChats() {
-    return chatFirebase.chatsStream(getIds());
+    return MergeStream([
+      chatFirebase.chatsStream(getIds()),
+      chatFirebase.chatsStream(getReverseIds()),
+      // getChats1()
+    ]);
+  }
+
+  messagesListener() {
+    List<ChatMessage> myMessages = [];
+    List<ChatMessage> chatMateMessages = [];
+    getChats().listen((x) {
+      if (x.isEmpty) {
+        return;
+      }
+      if (x.elementAt(0).user.uid == myInfo.uid) {
+        myMessages = x;
+      }
+      if (x.elementAt(0).user.uid == chatMateInfo.uid) {
+        chatMateMessages = x;
+      }
+      List<ChatMessage> test = [...myMessages, ...chatMateMessages];
+      sortData(test);
+      messages = [];
+
+      messages.addAll(test);
+    });
+  }
+
+  List<ChatMessage> sortData(List<ChatMessage> data) {
+    if (data.isNotEmpty) {
+      data.sort(
+          (ChatMessage a, ChatMessage b) => a.createdAt.compareTo(b.createdAt));
+    }
+    return data;
   }
 
   String getIds() {
     return myInfo.uid + chatMateInfo.uid;
+  }
+
+  String getReverseIds() {
+    return chatMateInfo.uid + myInfo.uid;
   }
 }

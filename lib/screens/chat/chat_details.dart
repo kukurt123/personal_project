@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/chat_bloc.dart';
+import 'package:new_practice/bloc/main_bloc.dart';
+import 'package:ntp/ntp.dart';
 
 class ChatDetails extends StatefulWidget {
   ChatDetails({Key key}) : super(key: key);
@@ -46,6 +48,8 @@ class ChatDetailsState extends State<ChatDetails> {
   @override
   Widget build(BuildContext context) {
     final chatBloc = Modular.get<ChatBloc>();
+    final mainBloc = Modular.get<MainBloc>();
+    chatBloc.messagesListener();
     return Scaffold(
       appBar: AppBar(
         title: Text("Chat App"),
@@ -53,7 +57,7 @@ class ChatDetailsState extends State<ChatDetails> {
       body: StreamBuilder<List<ChatMessage>>(
           stream: chatBloc.getChats(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.hasError) {
               return Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -62,7 +66,8 @@ class ChatDetailsState extends State<ChatDetails> {
                 ),
               );
             } else {
-              chatBloc.messages = snapshot.data;
+              print(snapshot.data);
+
               return DashChat(
                 key: _chatViewKey,
                 inverted: false,
@@ -72,7 +77,7 @@ class ChatDetailsState extends State<ChatDetails> {
                 user: chatBloc.myInfo,
                 inputDecoration:
                     InputDecoration.collapsed(hintText: "Add message here..."),
-                dateFormat: DateFormat('yyyy-MMM-dd'),
+                dateFormat: DateFormat('MMM dd, yyyy'),
                 timeFormat: DateFormat('HH:mm'),
                 messages: chatBloc.messages,
                 showUserAvatar: false,
@@ -92,11 +97,11 @@ class ChatDetailsState extends State<ChatDetails> {
                   border: Border.all(width: 0.0),
                   color: Colors.white,
                 ),
-                onQuickReply: (Reply reply) {
+                onQuickReply: (Reply reply) async {
                   chatBloc.messages.add(ChatMessage(
                       // id: ,
                       text: reply.value,
-                      createdAt: DateTime.now(),
+                      createdAt: await mainBloc.getDateNowNTP(),
                       user: chatBloc.myInfo));
 
                   // messages = [...messages];

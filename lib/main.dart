@@ -7,7 +7,6 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:hive/hive.dart';
 import 'package:sizer/sizer.dart';
 import 'routing/app_module.dart';
-import 'services/firebase_messaging/firebase_messaging_background_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 FirebaseMessaging firebaseMessaging1;
@@ -59,9 +58,6 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // void test() async {
-    // }
-
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return OrientationBuilder(

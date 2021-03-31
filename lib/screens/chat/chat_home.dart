@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
@@ -7,9 +6,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/chat_bloc.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/models/uber_model/users.dart';
-import 'package:new_practice/screens/qr/qr_list.dart';
+import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_user.dart';
-import 'package:new_practice/utils/avatar.dart';
+import 'package:new_practice/utils/image/image_with_state.dart';
 import 'package:new_practice/utils/list/item-list.widget.dart';
 import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:sizer/sizer.dart';
@@ -23,8 +22,10 @@ class ChatHome extends StatefulWidget {
 
 class _ChatHomeState extends State<ChatHome> {
   final mainBloc = Modular.get<MainBloc>();
-  final firebaseUser = Modular.get<FirebaseUsers>();
+  final authBloc = Modular.get<AuthService>();
+  final firebaseUser = FirebaseUsers.instance;
   final chatBloc = Modular.get<ChatBloc>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,8 +46,19 @@ class _ChatHomeState extends State<ChatHome> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListItemsBuilder<Users>(
+                  divided: false,
                   snapshot: snapshot,
                   itemBuilder: (context, req) {
+                    if (req.uid == authBloc.getCurrentUserId()) {
+                      final mainUser = ChatUser(
+                          name: req.displayName,
+                          uid: req.uid,
+                          avatar: req.photoUrl);
+                      chatBloc.myInfo = mainUser;
+                      return Container(
+                        height: 0,
+                      );
+                    }
                     ChatUser chatUser = ChatUser(
                         name: req.displayName,
                         avatar: req.photoUrl,
@@ -60,10 +72,9 @@ class _ChatHomeState extends State<ChatHome> {
   }
 
   Widget _list(ChatUser users) {
-    print('images..................................${users.avatar}');
     return ListTile(
       title: Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(0.0),
         child: FittedBox(
           alignment: Alignment.centerLeft,
           fit: BoxFit.scaleDown,
@@ -71,13 +82,19 @@ class _ChatHomeState extends State<ChatHome> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.person),
-                  // users.avatar != null
-                  //     ? Avatar(
-                  //         radius: 10,
-                  //         photoUrl: users.avatar,
-                  //       )
-                  // : Icon(Icons.image),
+                  users.avatar != null
+                      ? ImageWithState(
+                          height: 50,
+                          width: 50,
+                          futureUrl: getAvatar(users.avatar),
+                          boxShape: BoxShape.circle,
+                        )
+                      : Container(
+                          height: 50,
+                          width: 50,
+                          child: CircleAvatar(
+                            child: Icon(Icons.image),
+                          )),
                   SizedBox(width: 10),
                   Text(
                     users.name.contains('null') ? 'Anonymous' : users.name,
@@ -94,8 +111,17 @@ class _ChatHomeState extends State<ChatHome> {
       ),
       onTap: () {
         chatBloc.chatMateInfo = users;
-        Modular.link.pushNamed('details');
+        print(chatBloc.chatMateInfo);
+        print('/////');
+        print(chatBloc.myInfo);
+        Modular.link.pushNamed('/details');
       },
     );
+  }
+
+  Future<String> getAvatar(String avatar) {
+    var complete = new Completer();
+    complete.complete(avatar);
+    return complete.future.then((t) => t.toString());
   }
 }

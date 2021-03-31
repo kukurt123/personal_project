@@ -200,33 +200,6 @@ class EcommerceMainState extends State<EcommerceMain> {
                         ),
                       ),
                     ),
-                    // Positioned(
-                    //   right: 0,
-                    //   child: GestureDetector(
-                    //     child: Container(
-                    //       child: Align(
-                    //           alignment: Alignment.center,
-                    //           child: Icon(
-                    //             Icons.close,
-                    //             color: Colors.white,
-                    //           )),
-                    //       margin: EdgeInsets.all(2.0),
-                    //       width: 25,
-                    //       height: 25,
-                    //       decoration: BoxDecoration(
-                    //         color: Colors.red,
-                    //         boxShadow: [
-                    //           BoxShadow(
-                    //             color: Colors.black,
-                    //             offset: Offset(0, 1),
-                    //             blurRadius: 3.0,
-                    //           ),
-                    //         ],
-                    //         shape: BoxShape.circle,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                   ]),
                 );
               }),

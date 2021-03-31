@@ -7,8 +7,8 @@ import 'firestore.service.dart';
 String docIdFromCurrentDate() => DateTime.now().toIso8601String();
 
 class FirebaseUsers {
-  // FirebaseUsers._();
-  // static final instance = FirebaseUsers._();
+  FirebaseUsers._();
+  static final instance = FirebaseUsers._();
   // final uid = Modular.get<AuthService>().getCurrentUserId();
   // final uid = auth.getCurrentUserId();
   final _service = FirestoreService.instance;

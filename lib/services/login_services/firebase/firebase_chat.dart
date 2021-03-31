@@ -35,19 +35,17 @@ class FirebaseChat {
   //   uid: "25649654",
   // );
 
-  Future<void> setMessage(ChatMessage message, String ids) async =>
+  Future<void> setMessage(ChatMessage message, String uid) async =>
       await _service.setData(
-        path: ChatFirebaseApi.chat(ids, message.id),
+        path: ChatFirebaseApi.chat(uid, message.id),
         data: message.toJson(),
       );
 
-  Stream<List<ChatMessage>> chatsStream(String ids) =>
-      _service.collectionStream(
-        // queryBuilder: (x) => x.where((ChatMessage z) => z.id.contains(ids)),
-        path: ChatFirebaseApi.chats(ids),
+  Stream<List<ChatMessage>> chatsStream(String id) => _service.collectionStream(
+        queryBuilder: (x) => x.orderBy('createdAt', descending: false),
+        path: ChatFirebaseApi.chats(id),
         builder: (data, documentId) {
           ChatMessage req = ChatMessage.fromJson(data);
-          req.id = documentId;
           return req;
         },
       );

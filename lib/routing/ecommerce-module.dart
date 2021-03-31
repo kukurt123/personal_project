@@ -19,8 +19,6 @@ class EcommerceModule extends ChildModule {
             child: (_, args) => EcommerceDetail(
                   fruit: args.data,
                 )),
-        // ModularRouter('/home', child: (_, args) => EcommerceBilling()),
-        //         ModularRouter('/user', module: UserDetails()),
       ];
 
   static Inject get to => Inject<EcommerceModule>.of();
