@@ -111,9 +111,7 @@ class _ChatHomeState extends State<ChatHome> {
       ),
       onTap: () {
         chatBloc.chatMateInfo = users;
-        print(chatBloc.chatMateInfo);
-        print('/////');
-        print(chatBloc.myInfo);
+        chatBloc.messages = [];
         Modular.link.pushNamed('/details');
       },
     );

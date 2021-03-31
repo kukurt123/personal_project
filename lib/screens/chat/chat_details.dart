@@ -49,6 +49,7 @@ class ChatDetailsState extends State<ChatDetails> {
   Widget build(BuildContext context) {
     final chatBloc = Modular.get<ChatBloc>();
     final mainBloc = Modular.get<MainBloc>();
+    chatBloc.getChats();
     chatBloc.messagesListener();
     return Scaffold(
       appBar: AppBar(
@@ -78,7 +79,7 @@ class ChatDetailsState extends State<ChatDetails> {
                 inputDecoration:
                     InputDecoration.collapsed(hintText: "Add message here..."),
                 dateFormat: DateFormat('MMM dd, yyyy'),
-                timeFormat: DateFormat('HH:mm'),
+                timeFormat: DateFormat('h:mm a'),
                 messages: chatBloc.messages,
                 showUserAvatar: false,
                 showAvatarForEveryMessage: false,
