@@ -8,8 +8,10 @@ import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/models/uber_model/users.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_user.dart';
+import 'package:new_practice/utils/image/image_url_as_future.dart';
 import 'package:new_practice/utils/image/image_with_state.dart';
 import 'package:new_practice/utils/list/item-list.widget.dart';
+import 'package:new_practice/widgets/search_bar_resto.dart';
 import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:sizer/sizer.dart';
 
@@ -29,9 +31,50 @@ class _ChatHomeState extends State<ChatHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          FutureBuilder(
+            future: chatBloc.getImage(),
+            builder: (context, data) {
+              if (data.hasData) {
+                return ImageWithState(
+                  height: 30,
+                  width: 30,
+                  futureUrl: imageUrlAsFuture(data.data),
+                  boxShape: BoxShape.circle,
+                );
+              }
+              return CircularProgressIndicator();
+            },
+          ),
+        ]),
+        elevation: 0,
+        backgroundColor: Colors.grey[50],
+        titleSpacing: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.camera_alt,
+              color: Colors.black,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.black,
+            ),
+            onPressed: () {},
+          )
+        ],
+        title: Text(
+          'Chats',
+          style: TextStyle1(color: Colors.black, size: 25.0, isBold: true),
+        ),
+      ),
       body: Container(
         child: Column(
-          children: [Text('profile'), Text('search'), _itemLists()],
+          children: [SearchForm(), _itemLists()],
         ),
       ),
     );
@@ -93,7 +136,7 @@ class _ChatHomeState extends State<ChatHome> {
                           height: 50,
                           width: 50,
                           child: CircleAvatar(
-                            child: Icon(Icons.image),
+                            child: Icon(Icons.person),
                           )),
                   SizedBox(width: 10),
                   Text(
@@ -109,10 +152,10 @@ class _ChatHomeState extends State<ChatHome> {
           ),
         ),
       ),
-      onTap: () {
+      onTap: () async {
         chatBloc.chatMateInfo = users;
         chatBloc.messages = [];
-        Modular.link.pushNamed('/details');
+        await Modular.link.pushNamed('/details');
       },
     );
   }

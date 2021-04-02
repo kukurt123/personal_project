@@ -91,7 +91,7 @@ class FirebaseChat {
       if (kIsWeb) {
         uploadTask = ref.putData(await file.readAsBytes(), metadata);
       } else {
-        if (url.isEmpty) {
+        if (url == null) {
           uploadTask = ref.putFile(file, metadata);
         } else {
           // uploadTask = ref.putString(url, metadata);
@@ -113,7 +113,10 @@ class FirebaseChat {
     return Future.value(uploadTask);
   }
 
-  Future<String> downloadImage(String imagePath, String folderName) async {
+  Future<String> downloadImage(
+    String folderName,
+    String imagePath,
+  ) async {
     final link = await firebase_storage.FirebaseStorage.instance
         .ref('$folderName/$imagePath.jpg')
         .getDownloadURL();

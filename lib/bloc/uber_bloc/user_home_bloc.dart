@@ -296,7 +296,6 @@ class UserHomeBloc {
   pickImage({bool isCamera}) async {
     final pickedFile = await picker.getImage(
         source: isCamera ? ImageSource.camera : ImageSource.gallery);
-    print('resultttttttttt $pickedFile');
     if (pickedFile != null) {
       final File file2 = File(pickedFile.path);
       print('' + file2.path);

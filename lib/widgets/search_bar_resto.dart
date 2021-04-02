@@ -24,8 +24,8 @@ class SearchForm extends StatelessWidget {
                 textFieldConfiguration: TextFieldConfiguration(
                     controller: this._typeAheadController,
                     decoration: InputDecoration(
-                        hintText: 'Restaurants',
-                        contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+                        hintText: 'Search',
+                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(

@@ -5,7 +5,9 @@ import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/chat_bloc.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
-import 'package:ntp/ntp.dart';
+import 'package:new_practice/utils/image/image_url_as_future.dart';
+import 'package:new_practice/utils/image/image_with_state.dart';
+import 'package:new_practice/widgets/text/text_deco.dart';
 
 class ChatDetails extends StatefulWidget {
   ChatDetails({Key key}) : super(key: key);
@@ -16,10 +18,11 @@ class ChatDetails extends StatefulWidget {
 
 class ChatDetailsState extends State<ChatDetails> {
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
+  final chatBloc = Modular.get<ChatBloc>();
+  final mainBloc = Modular.get<MainBloc>();
+  // var m = List<ChatMessage>();
 
-  var m = List<ChatMessage>();
-
-  var i = 0;
+  // var i = 0;
 
   @override
   void initState() {
@@ -28,12 +31,6 @@ class ChatDetailsState extends State<ChatDetails> {
 
   void systemMessage() {
     Timer(Duration(milliseconds: 300), () {
-      // if (i < 6) {
-      //   setState(() {
-      //     messages = [...messages, m[i]];
-      //   });
-      //   i++;
-      // }
       Timer(Duration(milliseconds: 300), () {
         _chatViewKey.currentState.scrollController
           ..animateTo(
@@ -47,13 +44,41 @@ class ChatDetailsState extends State<ChatDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final chatBloc = Modular.get<ChatBloc>();
-    final mainBloc = Modular.get<MainBloc>();
     chatBloc.getChats();
     chatBloc.messagesListener();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat App"),
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
+        elevation: 0,
+        backgroundColor: Colors.grey[50],
+        titleSpacing: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: () {},
+          )
+        ],
+        title: Row(
+          children: [
+            ImageWithState(
+              height: 30,
+              width: 30,
+              futureUrl: imageUrlAsFuture(chatBloc.chatMateInfo.avatar),
+              boxShape: BoxShape.circle,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Text(
+                chatBloc.chatMateInfo.name,
+                style: TextStyle1(color: Colors.black, size: 16),
+              ),
+            ),
+          ],
+        ),
       ),
       body: StreamBuilder<List<ChatMessage>>(
           stream: chatBloc.getChats(),
@@ -104,9 +129,6 @@ class ChatDetailsState extends State<ChatDetails> {
                       text: reply.value,
                       createdAt: await mainBloc.getDateNowNTP(),
                       user: chatBloc.myInfo));
-
-                  // messages = [...messages];
-
                   Timer(Duration(milliseconds: 300), () {
                     _chatViewKey.currentState.scrollController
                       ..animateTo(
@@ -115,15 +137,6 @@ class ChatDetailsState extends State<ChatDetails> {
                         curve: Curves.easeOut,
                         duration: const Duration(milliseconds: 300),
                       );
-
-                    // if (i == 0) {
-                    //   systemMessage();
-                    //   Timer(Duration(milliseconds: 600), () {
-                    //     systemMessage();
-                    //   });
-                    // } else {
-                    //   systemMessage();
-                    // }
                   });
                 },
                 onLoadEarlier: () {
@@ -139,9 +152,68 @@ class ChatDetailsState extends State<ChatDetails> {
                     },
                   )
                 ],
+                messageTimeBuilder: (a, [b]) {
+                  return messageTimeBuilders(a, b);
+                },
+                messageImageBuilder: (a, [b]) {
+                  return messageImageBuilders(a, b);
+                },
+                messageDecorationBuilder: (a, b) {
+                  return messageDecorationBuilders(a, b);
+                },
+                messageContainerDecoration:
+                    BoxDecoration(color: Colors.transparent),
               );
             }
           }),
     );
+  }
+
+  messageImageBuilders(String a, [ChatMessage b]) {
+    return Container(
+        child: ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: ImageWithState(
+        futureUrl: imageUrlAsFuture(a),
+      ),
+    ));
+  }
+
+  messageTimeBuilders(String a, [ChatMessage b]) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 3,
+        ),
+        Text('${a.toLowerCase()}',
+            style: TextStyle(
+                fontSize: 10,
+                color: b.user.uid == chatBloc.myInfo.uid && b.image == null
+                    ? Colors.grey[100]
+                    : Colors.black)),
+      ],
+    );
+  }
+
+  messageDecorationBuilders(ChatMessage a, bool b) {
+    print('-------------------------------$b ${a.image}');
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: a.image == null
+            ? b
+                ? Colors.blue
+                : Colors.grey[300]
+            : Colors.transparent);
+
+    // if(a.user.uid == chatBloc.myInfo.uid) {
+
+    // } else {
+
+    // }
+
+    // decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+    // child: ImageWithState(
+    //   futureUrl: imageUrlAsFuture(a),
+    // ));
   }
 }

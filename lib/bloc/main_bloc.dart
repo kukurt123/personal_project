@@ -13,7 +13,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MainBloc {
-  // final firebaseMain = Modular.get<FirebaseMain>();
   final currentUser = new BehaviorSubject<SocialUser>();
 
   changeUser({SocialUser user}) {
@@ -113,8 +112,6 @@ class MainBloc {
     final directory = Platform.isAndroid
         ? await getExternalStorageDirectory()
         : await getApplicationDocumentsDirectory();
-    print('directory path....wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww');
-    print(directory.path);
     final taskId = await FlutterDownloader.enqueue(
       url: url,
       fileName: name,

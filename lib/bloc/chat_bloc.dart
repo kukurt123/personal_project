@@ -3,7 +3,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:new_practice/models/ecommerce/fruit.dart';
 import 'package:new_practice/models/ecommerce/fruit_total.dart';
+import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_chat.dart';
+import 'package:new_practice/static/id.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:dash_chat/dash_chat.dart';
 
@@ -25,6 +27,7 @@ class ChatBloc {
 
   final chatFirebase = Modular.get<FirebaseChat>();
   final mainBloc = Modular.get<MainBloc>();
+  final authBloc = Modular.get<AuthService>();
 
   Future<void> sendImage() async {
     final result = await picker.getImage(
@@ -37,21 +40,30 @@ class ChatBloc {
       final File file = File(
         result.path,
       );
+      ChatMessage message;
+      String id = appId;
 
       final imageSent = await chatFirebase.uploadImage(
           folderName: 'chat', file: file, imageName: id);
-      final imagePath = await chatFirebase.downloadImage(
-          'chat', imageSent.snapshot.ref.fullPath);
+      await imageSent.then((x) async {
+        print('......................................$x');
+        final imagePath = await downloadImage(id);
 
-      ChatMessage message = ChatMessage(
-          text: "",
-          user: myInfo,
-          image: imagePath,
-          createdAt: await mainBloc.getDateNowNTP());
-      addMessage(message);
+        message = ChatMessage(
+            id: id,
+            text: "",
+            user: myInfo,
+            image: imagePath,
+            createdAt: await mainBloc.getDateNowNTP());
+        addMessage(message);
+      });
     } else {
       return null;
     }
+  }
+
+  Future<String> downloadImage(String path) async {
+    return await chatFirebase.downloadImage('chat', path);
   }
 
   Future<void> addMessage(ChatMessage message) async {
@@ -99,6 +111,10 @@ class ChatBloc {
 
       messages.addAll(test);
     });
+  }
+
+  Future<String> getImage() async {
+    return await authBloc.currentUser().then((x) => x.photoUrl);
   }
 
   List<ChatMessage> sortData(List<ChatMessage> data) {

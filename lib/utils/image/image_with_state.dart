@@ -28,7 +28,7 @@ class ImageWithState extends StatelessWidget {
               snapshot.data,
               width: width,
               height: height,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               enableMemoryCache: true,
               shape: boxShape,
               cache: true,
