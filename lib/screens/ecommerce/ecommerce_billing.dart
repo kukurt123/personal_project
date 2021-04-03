@@ -204,11 +204,13 @@ void showButtonSheet(BuildContext context) {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Expanded(child: Center(child: Text('Next'))),
+                    Expanded(child: Center(child: Text('Proceed Payment'))),
                     Icon(Icons.arrow_forward_rounded),
                   ],
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Modular.link.pushNamed('payment');
+                },
               ),
             ]),
       ),

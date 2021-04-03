@@ -10,12 +10,14 @@ import 'package:rxdart/rxdart.dart';
 import 'package:dash_chat/dash_chat.dart';
 
 import 'main_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatBloc {
   bool isLoaded = false;
   final cart = List<Fruit>();
   final cartGrouped = List<FruitTotal>();
   final fruitListStream = BehaviorSubject<bool>.seeded(false);
+  final chatHasData = BehaviorSubject<bool>.seeded(false);
   String id = '';
   bool done = false;
   String heroTag = '';
@@ -41,16 +43,15 @@ class ChatBloc {
         result.path,
       );
       ChatMessage message;
-      String id = appId;
+      // String id = appId;
 
       final imageSent = await chatFirebase.uploadImage(
           folderName: 'chat', file: file, imageName: id);
       await imageSent.then((x) async {
-        print('......................................$x');
         final imagePath = await downloadImage(id);
 
         message = ChatMessage(
-            id: id,
+            id: Uuid().v4(),
             text: "",
             user: myInfo,
             image: imagePath,

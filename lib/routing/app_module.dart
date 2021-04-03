@@ -16,6 +16,7 @@ import 'package:new_practice/screens/login/login.dart';
 import 'package:new_practice/screens/page2.dart';
 import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
+import 'package:new_practice/utils/loading/loading_util.dart';
 import '../main.dart';
 import 'carousel_demo_routing.dart';
 import 'chat_module.dart';
@@ -38,6 +39,7 @@ class AppModule extends MainModule {
         Bind((i) => QrBloc()),
         Bind((i) => UberUserBloc()),
         Bind((i) => ChatBloc()),
+        Bind((i) => LoadingUtil()),
       ];
   @override
   Widget get bootstrap => AppWidget();

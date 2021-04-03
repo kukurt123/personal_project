@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/page1_1/page1_1_barrel.dart';
+import 'package:new_practice/utils/loading/loading_util.dart';
+import 'package:new_practice/utils/time.dart';
 
 class SplashEffect extends StatelessWidget {
   final Widget child;
@@ -54,13 +56,20 @@ class DrawerListItem extends StatelessWidget {
           )
         ],
       ),
-      onTap: () {
+      onTap: () async {
+        Navigator.pop(context);
         if (this.withFunc) {
           print('with func');
           this.onTap();
+
+          // setTimeout(() {
+
+          Modular.to.pushNamed('/main/' + this.routeName);
+          // }, 200);
+        } else {
+          Modular.to.pushNamed('/main/' + this.routeName);
         }
-        Navigator.pop(context);
-        Modular.to.pushNamed('/main/' + this.routeName);
+
         // if (onTap()) {
         // }
       },

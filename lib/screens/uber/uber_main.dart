@@ -6,6 +6,7 @@ import 'package:new_practice/models/uber_model/users.dart';
 import 'package:new_practice/screens/uber/user/uber_home.dart';
 import 'package:new_practice/screens/uber/user/user_home.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
+import 'package:new_practice/utils/loading/loading_util.dart';
 import 'login/sign-in.dart';
 
 class UberMain extends StatelessWidget {
@@ -13,6 +14,7 @@ class UberMain extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Modular.get<AuthService>();
     final uberBloc = Modular.get<UberUserBloc>();
+    final loadingUtil = Modular.get<LoadingUtil>();
     // auth.checkChanges();
     return StreamBuilder<Users>(
         stream: auth.onAuthStateChanged,
@@ -22,6 +24,7 @@ class UberMain extends StatelessWidget {
             if (user == null) {
               return SignIn();
             }
+
             return UserHome();
             // return UberHome();
           } else {

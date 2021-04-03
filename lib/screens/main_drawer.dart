@@ -7,6 +7,8 @@ import 'package:new_practice/models/social_media/socialuser.dart';
 import 'package:new_practice/services/firebase_messaging/firebase_messaging_background_handler.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/utils/alert-dialog/alert-dialogs.dart';
+import 'package:new_practice/utils/loading/loading_util.dart';
+import 'package:new_practice/utils/loading/progress_dialog.dart';
 import 'package:new_practice/widgets/extras.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -58,7 +60,7 @@ class _DrawerMainState extends State<DrawerMain> {
                           child: GestureDetector(
                             onTap: () {
                               print('clicked....');
-                              Modular.to.pushNamed('/social/profile');
+                              Modular.link.pushNamed('social/profile');
                             },
                           ),
                           decoration: BoxDecoration(
@@ -99,9 +101,12 @@ class _DrawerMainState extends State<DrawerMain> {
           DrawerListItem(
               icon: Icons.qr_code, text: 'Qr Codes', routeName: '/qr'),
           DrawerListItem(
-              icon: Icons.directions_bike,
-              text: 'Uber Clone',
-              routeName: '/uber'),
+            icon: Icons.directions_bike,
+            text: 'Uber Clone',
+            routeName: '/uber',
+            withFunc: true,
+            onTap: () async {},
+          ),
           DrawerListItem(
               icon: Icons.zoom_in,
               text: 'Zoom Clone',

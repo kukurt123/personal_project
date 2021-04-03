@@ -11,7 +11,9 @@ import 'package:new_practice/services/login_services/firebase/firebase_user.dart
 import 'package:new_practice/utils/image/image_url_as_future.dart';
 import 'package:new_practice/utils/image/image_with_state.dart';
 import 'package:new_practice/utils/list/item-list.widget.dart';
+import 'package:new_practice/utils/loading/progress_dialog.dart';
 import 'package:new_practice/widgets/search_bar_resto.dart';
+import 'package:new_practice/widgets/shimmers/shimmer_list.dart';
 import 'package:new_practice/widgets/text/text_deco.dart';
 import 'package:sizer/sizer.dart';
 
@@ -30,21 +32,33 @@ class _ChatHomeState extends State<ChatHome> {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<Object>(
+        stream: firebaseUser.usersStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData == true) {
+            return _mainScaffold();
+          }
+          return ShimmerList();
+        });
+  }
+
+  Widget _mainScaffold() {
     return Scaffold(
       appBar: AppBar(
         leading: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          FutureBuilder(
+          FutureBuilder<String>(
+            initialData: '',
             future: chatBloc.getImage(),
             builder: (context, data) {
-              if (data.hasData) {
-                return ImageWithState(
-                  height: 30,
-                  width: 30,
-                  futureUrl: imageUrlAsFuture(data.data),
-                  boxShape: BoxShape.circle,
-                );
+              if (data.data == '') {
+                return CircularProgressIndicator();
               }
-              return CircularProgressIndicator();
+              return ImageWithState(
+                height: 30,
+                width: 30,
+                futureUrl: imageUrlAsFuture(data.data),
+                boxShape: BoxShape.circle,
+              );
             },
           ),
         ]),
@@ -88,6 +102,7 @@ class _ChatHomeState extends State<ChatHome> {
           stream: firebaseUser.usersStream(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              chatBloc.chatHasData.add(true);
               return ListItemsBuilder<Users>(
                   divided: false,
                   snapshot: snapshot,

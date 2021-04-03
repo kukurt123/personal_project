@@ -9,6 +9,8 @@ import 'package:sizer/sizer.dart';
 import 'routing/app_module.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'utils/loading/loading_util.dart';
+
 FirebaseMessaging firebaseMessaging1;
 Future<void> main() async {
   Hive..init(Directory.current.path);
@@ -56,6 +58,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 class AppWidget extends StatelessWidget {
+  final loadingUtil = Modular.get<LoadingUtil>();
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -64,10 +67,10 @@ class AppWidget extends StatelessWidget {
         builder: (BuildContext context, Orientation orientation) {
           SizerUtil().init(constraints, orientation);
           return MaterialApp(
+            builder: loadingUtil.easyLoadingInit(),
             initialRoute: true != false ? "/main" : "/main",
             navigatorKey: Modular.navigatorKey,
             onGenerateRoute: Modular.generateRoute,
-            title: 'Flutter Demo',
             theme: ThemeData(
               primarySwatch: Colors.blue,
               visualDensity: VisualDensity.adaptivePlatformDensity,

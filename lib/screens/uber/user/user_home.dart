@@ -5,10 +5,13 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/bloc/uber_bloc/uber-user_bloc.dart';
 import 'package:new_practice/bloc/uber_bloc/user_home_bloc.dart';
 import 'package:new_practice/models/uber/location_model.dart';
 import 'package:new_practice/static/config/maps/config_maps.dart';
+import 'package:new_practice/utils/loading/loading_util.dart';
+import 'package:new_practice/utils/loading/progress_dialog.dart';
 import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
 import 'package:new_practice/widgets/uber_widgets/user_home_widgets.dart';
 import 'package:sizer/sizer.dart';
@@ -39,48 +42,58 @@ class _UserHomeState extends State<UserHome> {
 
   final userHomeBloc = Modular.get<UserHomeBloc>();
   final uberBloc = Modular.get<UberUserBloc>();
+  final mainBloc = Modular.get<MainBloc>();
+  final loadingUtil = Modular.get<LoadingUtil>();
   @override
   Widget build(BuildContext context) {
     userHomeBloc.cont = context;
+
     // var height = MediaQuery.of(context).size.height;
     // var width = MediaQuery.of(context).size.width;
-
-    return Scaffold(
-      body: StreamBuilder(
-          stream: userHomeBloc.getStreams$(),
-          builder: (context, snapshot) {
-            if (userHomeBloc.markers.values != null) {
-              userHomeBloc.populateMarkersPolylines();
-              return Stack(
-                children: [
-                  _googleMap(userHomeBloc.circleValues,
-                      userHomeBloc.markerValues, userHomeBloc.polylineValues),
-                  Positioned(
-                    width: MediaQuery.of(context).size.width,
-                    top: 0,
-                    child: SlideInDown(
-                      delay: Duration(seconds: 5),
-                      animate: true,
-                      child: userHomeBloc.locations.isEmpty
-                          ? SizedBox(width: 20)
-                          : UserHomeCarousel(),
+    return loadingUtil.widgetLoading(
+      Scaffold(
+        body: StreamBuilder(
+            stream: userHomeBloc.getStreams$(),
+            builder: (context, snapshot) {
+              if (userHomeBloc.markers.values != null) {
+                userHomeBloc.populateMarkersPolylines();
+                return Stack(
+                  children: [
+                    StreamBuilder<bool>(
+                        stream: userHomeBloc.isDoneLoading.stream,
+                        builder: (context, snapshot) {
+                          return _googleMap(
+                              userHomeBloc.circleValues,
+                              userHomeBloc.markerValues,
+                              userHomeBloc.polylineValues);
+                        }),
+                    Positioned(
+                      width: MediaQuery.of(context).size.width,
+                      top: 0,
+                      child: SlideInDown(
+                        delay: Duration(seconds: 5),
+                        animate: true,
+                        child: userHomeBloc.locations.isEmpty
+                            ? SizedBox(width: 20)
+                            : UserHomeCarousel(),
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    width: MediaQuery.of(context).size.width,
-                    // height: 100,
-                    bottom: 0,
-                    child: Container(
-                        height: 50,
-                        // height: 50,
-                        // width: double.infinity,
-                        child: _listViewButtons(userHomeBloc.markerValues)),
-                  )
-                ],
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          }),
+                    Positioned(
+                      width: MediaQuery.of(context).size.width,
+                      // height: 100,
+                      bottom: 0,
+                      child: Container(
+                          height: 50,
+                          // height: 50,
+                          // width: double.infinity,
+                          child: _listViewButtons(userHomeBloc.markerValues)),
+                    )
+                  ],
+                );
+              }
+              return Center(child: CircularProgressIndicator());
+            }),
+      ),
     );
   }
 
