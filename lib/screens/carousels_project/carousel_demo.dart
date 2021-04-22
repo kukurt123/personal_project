@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:new_practice/screens/home/my_home_page.dart';
+import 'package:new_practice/screens/main/main_page.dart';
 
 final List<String> imgList = [
   'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
@@ -35,7 +35,7 @@ class CarouselDemo extends StatelessWidget {
       '/reason': (ctx) => CarouselChangeReasonDemo(),
       '/position': (ctx) => KeepPageviewPositionDemo(),
       '/multiple': (ctx) => MultipleItemDemo(),
-      '/back': (ctx) => MyHomePage()
+      '/back': (ctx) => MainPage()
     });
   }
 }

@@ -35,15 +35,7 @@ class _UserDrawerState extends State<UserDrawer> {
                   Container(
                     height: 100,
                     width: 100,
-                    // child: GestureDetector(
-                    //   onTap: () {
-                    //     print('clicked....');
-                    //     Modular.to.pushNamed('/social/profile');
-                    //   },
-                    // ),
                     decoration: BoxDecoration(
-                        // image: DecorationImage(
-                        //     fit: BoxFit.cover, image: AssetImage(null)),
                         border: Border.all(width: 5, color: Colors.white),
                         shape: BoxShape.circle),
                   ),

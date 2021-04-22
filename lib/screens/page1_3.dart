@@ -4,7 +4,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/page1_3/page1_3rx.dart';
 import 'package:new_practice/models/food.dart';
-
 import 'main_drawer.dart';
 
 class Page1_3 extends StatefulWidget {
@@ -34,7 +33,7 @@ class _Page1_3State extends State<Page1_3> {
                     key: keyy,
                     onChanged: () {
                       data.pood.add(widget.foods.copyWith.call(
-                          name: keyy.currentState.fields['name']?.value,
+                          name: keyy.currentState.fields['name'].toString(),
                           price: 200.0));
                       print('changing....' + data.pood.value.name);
                     },

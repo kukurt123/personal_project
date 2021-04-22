@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 
 class MainBloc {
   final currentUser = new BehaviorSubject<SocialUser>();
+  final openIntro = new BehaviorSubject<bool>.seeded(false);
 
   changeUser({SocialUser user}) {
     currentUser.sink.add(user);

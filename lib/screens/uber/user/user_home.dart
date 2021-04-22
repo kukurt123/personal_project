@@ -86,7 +86,9 @@ class _UserHomeState extends State<UserHome> {
                           height: 50,
                           // height: 50,
                           // width: double.infinity,
-                          child: _listViewButtons(userHomeBloc.markerValues)),
+                          child: Center(
+                              child:
+                                  _listViewButtons(userHomeBloc.markerValues))),
                     )
                   ],
                 );
@@ -96,25 +98,6 @@ class _UserHomeState extends State<UserHome> {
       ),
     );
   }
-
-//WIDGETS
-  // Widget _buildContents(BuildContext context) {
-  //   return StreamBuilder<List<LocationModel>>(
-  //       stream: database.jobsStream(),
-  //       builder: (context, snapshot) {
-  //         return ListItemsBuilder<LocationModel>(
-  //             snapshot: snapshot,
-  //             itemBuilder: (context, place) => Dismissible(
-  //                 key: Key('job-${place.id}'),
-  //                 background: Container(color: Colors.blue[900]),
-  //                 direction: DismissDirection.endToStart,
-  //                 // onDismissed: (direction) => _delete(context, job),
-  //                 child: PlacesPageTile(
-  //                   location: place,
-  //                   onTap: () {},
-  //                 )));
-  //       });
-  // }
 
   Widget _googleMap(Map<CircleId, Circle> circles,
       Map<MarkerId, Marker> markers, Map<PolylineId, Polyline> polyline) {
@@ -133,7 +116,7 @@ class _UserHomeState extends State<UserHome> {
       myLocationButtonEnabled: false,
       mapType: MapType.normal,
       zoomGesturesEnabled: true,
-      zoomControlsEnabled: true,
+      // zoomControlsEnabled: true,
       scrollGesturesEnabled: true,
       circles: Set<Circle>.of(circles.values),
       markers: Set<Marker>.of(markers.values),
@@ -157,48 +140,47 @@ class _UserHomeState extends State<UserHome> {
       addAutomaticKeepAlives: true,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
-      // mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        RaisedButton(
-          color: Colors.red,
-          child: Icon(
-            Icons.add_location,
-            color: Colors.white,
-          ),
-          onPressed: () async {
-            final newLat = mainLat + Random().nextDouble();
-            final newLong = mainLong + Random().nextDouble();
-            final newLatLng = LatLng(newLat, newLong);
-            userHomeBloc.latestMarker = newLatLng;
+        // RaisedButton(
+        //   color: Colors.red,
+        //   child: Icon(
+        //     Icons.add_location,
+        //     color: Colors.white,
+        //   ),
+        //   onPressed: () async {
+        //     final newLat = mainLat + Random().nextDouble();
+        //     final newLong = mainLong + Random().nextDouble();
+        //     final newLatLng = LatLng(newLat, newLong);
+        //     userHomeBloc.latestMarker = newLatLng;
 
-            await userHomeBloc.addMarker(newLatLng, newLat.toString(), "1");
-            if (markers.length > 0) {
-              await userHomeBloc
-                  .moveToMarker(userHomeBloc.latestMarker ?? mainCoordinates);
-            }
-          },
-        ),
-        RaisedButton(
-            color: Colors.purple,
-            child: Icon(
-              Icons.add_location,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              final newLat = mainLat + Random().nextDouble();
-              final newLong = mainLong + Random().nextDouble();
-              final newLatLng = LatLng(newLat, newLong);
-              userHomeBloc.latestMarker = newLatLng;
-              userHomeBloc.addMarker(
-                newLatLng,
-                newLat.toString(),
-                "1",
-              );
-              if (markers.length > 0) {
-                userHomeBloc
-                    .moveToMarker(userHomeBloc.latestMarker ?? mainCoordinates);
-              }
-            }),
+        //     await userHomeBloc.addMarker(newLatLng, newLat.toString(), "1");
+        //     if (markers.length > 0) {
+        //       await userHomeBloc
+        //           .moveToMarker(userHomeBloc.latestMarker ?? mainCoordinates);
+        //     }
+        //   },
+        // ),
+        // RaisedButton(
+        //     color: Colors.purple,
+        //     child: Icon(
+        //       Icons.add_location,
+        //       color: Colors.white,
+        //     ),
+        //     onPressed: () {
+        //       final newLat = mainLat + Random().nextDouble();
+        //       final newLong = mainLong + Random().nextDouble();
+        //       final newLatLng = LatLng(newLat, newLong);
+        //       userHomeBloc.latestMarker = newLatLng;
+        //       userHomeBloc.addMarker(
+        //         newLatLng,
+        //         newLat.toString(),
+        //         "1",
+        //       );
+        //       if (markers.length > 0) {
+        //         userHomeBloc
+        //             .moveToMarker(userHomeBloc.latestMarker ?? mainCoordinates);
+        //       }
+        //     }),
         RaisedButton(
             color: Colors.black54,
             child: Icon(
@@ -209,15 +191,15 @@ class _UserHomeState extends State<UserHome> {
               Modular.link.pushNamed('/search');
               print('on searched pressed');
             }),
-        RaisedButton(
-            color: Colors.black54,
-            child: Icon(
-              Icons.create_rounded,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              print('on searched pressed');
-            }),
+        // RaisedButton(
+        //     color: Colors.black54,
+        //     child: Icon(
+        //       Icons.create_rounded,
+        //       color: Colors.white,
+        //     ),
+        //     onPressed: () {
+        //       print('on searched pressed');
+        //     }),
         RaisedButton(
             color: Colors.black54,
             child: Icon(
@@ -249,11 +231,17 @@ class _UserHomeState extends State<UserHome> {
                 onChanged: () {},
                 child: Column(
                   children: [
+                    Text('place of the pointed coordinates',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 3.0.h,
+                    ),
                     FormBuilderTextField(
                       controller: nameController,
                       name: 'name',
                       decoration: InputDecoration(
-                          labelText: 'Name', icon: Icon(Icons.person)),
+                          labelText: 'Place', icon: Icon(Icons.person)),
                     ),
                     SizedBox(
                       height: 3.0.h,
@@ -262,18 +250,18 @@ class _UserHomeState extends State<UserHome> {
                       controller: requestController,
                       name: 'request',
                       decoration: InputDecoration(
-                          labelText: 'Request',
+                          labelText: 'Additional Info.',
                           icon: Icon(Icons.medical_services_outlined)),
                     ),
                     SizedBox(
                       height: 3.0.h,
                     ),
-                    FormBuilderTextField(
-                      controller: paymentController,
-                      name: 'payment',
-                      decoration: InputDecoration(
-                          labelText: 'Payment', icon: Icon(Icons.money)),
-                    ),
+                    //   FormBuilderTextField(
+                    //     controller: paymentController,
+                    //     name: 'payment',
+                    //     decoration: InputDecoration(
+                    //         labelText: 'Payment', icon: Icon(Icons.money)),
+                    //   ),
                   ],
                 ),
               ),

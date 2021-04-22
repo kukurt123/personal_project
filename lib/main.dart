@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:hive/hive.dart';
+import 'package:new_practice/utils/image/splash.dart';
 import 'package:sizer/sizer.dart';
 import 'routing/app_module.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -66,16 +67,27 @@ class AppWidget extends StatelessWidget {
       return OrientationBuilder(
         builder: (BuildContext context, Orientation orientation) {
           SizerUtil().init(constraints, orientation);
-          return MaterialApp(
-            builder: loadingUtil.easyLoadingInit(),
-            initialRoute: true != false ? "/main" : "/main",
-            navigatorKey: Modular.navigatorKey,
-            onGenerateRoute: Modular.generateRoute,
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
-          );
+          return FutureBuilder(
+              future: Future.delayed(Duration(seconds: 0)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return MaterialApp(
+                      home: Splash(
+                    path: 'assets/images/splash.png',
+                  ));
+                } else {
+                  return MaterialApp(
+                    builder: loadingUtil.easyLoadingInit(),
+                    initialRoute: true != false ? "/main" : "/main",
+                    navigatorKey: Modular.navigatorKey,
+                    onGenerateRoute: Modular.generateRoute,
+                    theme: ThemeData(
+                      primarySwatch: Colors.blue,
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                    ),
+                  );
+                }
+              });
         },
       );
     });

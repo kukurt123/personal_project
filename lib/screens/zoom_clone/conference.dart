@@ -42,7 +42,7 @@ class _ConferenceState extends State<Conference>
         centerTitle: true,
         backgroundColor: Colors.lightBlue,
         title: Text(
-          "Conference",
+          "Zoom Clone",
           style: TextStyle1(color: Colors.white, isBold: true, size: 25),
         ),
         bottom: TabBar(

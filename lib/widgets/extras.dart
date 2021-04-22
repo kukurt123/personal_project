@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:new_practice/bloc/page1_1/page1_1_barrel.dart';
-import 'package:new_practice/utils/loading/loading_util.dart';
-import 'package:new_practice/utils/time.dart';
+import 'package:logger/logger.dart';
 
 class SplashEffect extends StatelessWidget {
   final Widget child;
@@ -82,4 +79,9 @@ class Extras {
     Navigator.pop(context);
     Modular.to.pushReplacementNamed(routeName);
   }
+}
+
+pt(String str) {
+  var logger = Logger();
+  logger.d(str);
 }

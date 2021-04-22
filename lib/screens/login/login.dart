@@ -1,17 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:login_fresh/login_fresh.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:new_practice/models/uber_model/email-sign-in-change.model.dart';
+import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
+import 'package:new_practice/utils/alert-dialog/alert-dialogs.dart';
+import 'package:new_practice/utils/button/custom-button.dart';
 
 class Login extends StatefulWidget {
-  //You have to create a list with the type of login's that you are going to import into your application
-
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  final manager = Modular.get<SignInManager>();
+  final roleValue = '';
+
+  bool isLoading = true;
+
+  Future<void> anon(BuildContext context) async {
+    try {
+      await manager.anonymousLogin();
+    } on PlatformException catch (e) {
+      infoDialogUtil(context, ['Login Failed', ConvertError().message(e)]);
+    }
+  }
+
+  Future<void> signinWithGoogle(BuildContext context) async {
+    try {
+      await manager.signInWithGoogle();
+    } catch (e) {
+      // print(e);
+      infoDialogUtil(context, ['Login Failed', ConvertError().message(e)]);
+    }
+  }
+
+  Future<void> signinWithFacebook(BuildContext context) async {
+    try {
+      await manager.signInWithFacebook();
+    } catch (e) {
+      infoDialogUtil(context, ['Login Failed', ConvertError().message(e)]);
+    }
+  }
+
+  void _signInWithEmail() {
+    Modular.link.pushNamed('/email');
+  }
+
   @override
   Widget build(BuildContext context) {
+    manager.setIsLoading(false);
+    isLoading = manager.isLoading.value;
     return Scaffold(body: buildLoginFresh());
   }
 
@@ -19,16 +59,12 @@ class _LoginState extends State<Login> {
     List<LoginFreshTypeLoginModel> listLogin = [
       LoginFreshTypeLoginModel(
           callFunction: (BuildContext _buildContext) {
-            Modular.to.popAndPushNamed('main');
-            print('FB clicked/....');
-            // develop what they want the facebook to do when the user clicks
+            isLoading ? null : signinWithFacebook(context);
           },
           logo: TypeLogo.facebook),
       LoginFreshTypeLoginModel(
           callFunction: (BuildContext _buildContext) {
-            // print('facebook');
-
-            // develop what they want the Google to do when the user clicks
+            isLoading ? null : signinWithGoogle(context);
           },
           logo: TypeLogo.google),
       LoginFreshTypeLoginModel(
@@ -67,11 +103,6 @@ class _LoginState extends State<Login> {
         isRequest(true);
 
         Future.delayed(Duration(seconds: 2), () {
-          print('-------------- function call----------------');
-          print(user);
-          print(password);
-          print('-------------- end call----------------');
-
           isRequest(false);
         });
       },
@@ -93,9 +124,6 @@ class _LoginState extends State<Login> {
         isRequest(true);
 
         Future.delayed(Duration(seconds: 2), () {
-          print('-------------- function call----------------');
-          print(email);
-          print('-------------- end call----------------');
           isRequest(false);
         });
       },
@@ -108,9 +136,7 @@ class _LoginState extends State<Login> {
     return LoginFreshFooter(
       logo: 'assets/images/resto1.jpg',
       text: 'Power by',
-      funFooterLogin: () {
-        // develop what they want the footer to do when the user clicks
-      },
+      funFooterLogin: () {},
     );
   }
 
@@ -122,14 +148,23 @@ class _LoginState extends State<Login> {
         funSignUp: (BuildContext _context, Function isRequest,
             SignUpModel signUpModel) {
           isRequest(true);
-
-          print(signUpModel.email);
-          print(signUpModel.password);
-          print(signUpModel.repeatPassword);
-          print(signUpModel.surname);
-          print(signUpModel.name);
-
           isRequest(false);
         });
+  }
+
+  Widget _buildHeader() {
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Text(
+      'Sign in',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 32.0,
+        fontWeight: FontWeight.w600,
+      ),
+    );
   }
 }

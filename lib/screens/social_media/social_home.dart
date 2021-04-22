@@ -47,7 +47,7 @@ class _SocialHomeState extends State<SocialHome>
         brightness: Brightness.light,
         centerTitle: true,
         title: Text(
-          'FRENZY',
+          'SOCIAL UI',
           style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontWeight: FontWeight.bold,

@@ -7,18 +7,7 @@ import 'package:new_practice/utils/alert-dialog/alert-dialogs.dart';
 import 'package:new_practice/utils/button/custom-button.dart';
 
 class EmailSignInFormChange extends StatefulWidget {
-  // EmailSignInFormChange({@required this.model});
   final model = Modular.get<EmailSignInChangeModel>();
-  // final EmailSignInChangeModel model;
-
-  // static Widget create(BuildContext context) {
-  // final AuthService auth = context.watch<AuthService>();
-  // final auth = Modular.get<AuthService>();
-
-  // return ChangeNotifierProvider<EmailSignInChangeModel>(
-  //     create: (context) => EmailSignInChangeModel(),
-  //     child: EmailSignInFormChange());
-  // }
 
   @override
   _EmailSignInFormChangeState createState() => _EmailSignInFormChangeState();

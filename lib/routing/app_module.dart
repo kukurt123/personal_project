@@ -11,7 +11,8 @@ import 'package:new_practice/repo/page1_1_repo.dart';
 import 'package:new_practice/routing/resto_routing.dart';
 import 'package:new_practice/routing/social_media.dart';
 import 'package:new_practice/samples/navigation_drawer/navigation_drawer_home.dart';
-import 'package:new_practice/screens/home/my_home_page.dart';
+import 'package:new_practice/screens/main/main_intro.dart';
+import 'package:new_practice/screens/main/main_page.dart';
 import 'package:new_practice/screens/login/login.dart';
 import 'package:new_practice/screens/page2.dart';
 import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
@@ -59,8 +60,9 @@ class MainRouting extends ChildModule {
   List<ModularRouter> get routers => [
         ModularRouter(
           '/home',
-          child: (_, __) => MyHomePage(),
+          child: (_, __) => MainPage(),
         ),
+        ModularRouter('intro', child: (_, __) => MainIntro()),
         ModularRouter('/page1', module: Page1_1Module()),
         ModularRouter('/page2', child: (_, __) => Page2()),
         ModularRouter('/samples', child: (_, __) => HomePage()),
@@ -72,7 +74,7 @@ class MainRouting extends ChildModule {
         ModularRouter('/uber', module: UberModule()),
         ModularRouter('/qr', module: QrModule()),
         ModularRouter('/ecommerce', module: EcommerceModule()),
-        ModularRouter('chat', module: ChatModule())
+        ModularRouter('chat', module: ChatModule()),
       ];
 
   static Inject get to => Inject<MainModule>.of();

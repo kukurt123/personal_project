@@ -46,20 +46,20 @@ class _QrMainState extends State<QrMain> {
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.create),
         title: ("Create"),
-        activeColor: CupertinoColors.activeBlue,
-        inactiveColor: CupertinoColors.systemGrey,
+        // activeColor: CupertinoColors.activeBlue,
+        // inactiveColor: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.list_dash),
         title: ("List"),
-        activeColor: CupertinoColors.activeBlue,
-        inactiveColor: CupertinoColors.systemGrey,
+        // activeColor: CupertinoColors.activeBlue,
+        // inactiveColor: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.qrcode),
         title: ("Qr"),
-        activeColor: CupertinoColors.activeBlue,
-        inactiveColor: CupertinoColors.systemGrey,
+        // activeColor: CupertinoColors.activeBlue,
+        // inactiveColor: CupertinoColors.systemGrey,
       ),
     ];
   }

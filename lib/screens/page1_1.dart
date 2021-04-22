@@ -107,27 +107,6 @@ class Page1_1 extends StatelessWidget {
                           SizedBox(
                             height: 20,
                           ),
-                          FormBuilderTextField(
-                            controller: priceController,
-                            name: 'tex',
-                            decoration: InputDecoration(
-                                labelText: 'Score',
-                                icon: Icon(Icons.score),
-                                border: OutlineInputBorder()),
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(context),
-                              (val) {
-                                if (_fbKey.currentState.fields['tex']?.value
-                                        .toString()
-                                        .trim()
-                                        .length <
-                                    2) {
-                                  return 'text too short';
-                                }
-                                return null;
-                              }
-                            ]),
-                          ),
                         ],
                       ),
                     );
@@ -141,12 +120,12 @@ class Page1_1 extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
-                      _fbKey.currentState.save();
-                      if (_fbKey.currentState.validate()) {
-                        print('saved');
-                      } else {
-                        print('not saved!');
-                      }
+                      // _fbKey.currentState.save();
+                      // if (_fbKey.currentState.validate()) {
+                      //   print('saved');
+                      // } else {
+                      //   print('not saved!');
+                      // }
                     },
                   )
                 ],

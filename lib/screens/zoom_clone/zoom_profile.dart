@@ -10,12 +10,7 @@ class ZoomProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('mediaqueries');
-    // print(MediaQuery.of(context).size.width / 3);
     print(MediaQuery.of(context).size.height / 10);
-    // print(MediaQuery.of(context).size.aspectRatio);
-    // print(MediaQuery.of(context).devicePixelRatio);
-    // print(MediaQuery.of(context).);
     return Container(
       child: Column(
         children: [

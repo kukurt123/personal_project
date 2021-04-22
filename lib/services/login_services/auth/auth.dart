@@ -9,6 +9,7 @@ import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/models/uber_model/users.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_chat.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_user.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 
 abstract class AuthBase {
@@ -45,6 +46,13 @@ class AuthService {
     }, onDone: () {
       print('done');
     });
+  }
+
+  Stream<dynamic> mainChanges() {
+    return MergeStream([
+      mainBloc.openIntro.stream,
+      onAuthStateChanged,
+    ]);
   }
 
   Users _userFromFirebase(User user) {
@@ -95,6 +103,10 @@ class AuthService {
     final authResult = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: pass);
     return _userFromFirebase(authResult.user);
+  }
+
+  Future<Users> toNull() async {
+    return _userFromFirebase(null);
   }
 
   // @override

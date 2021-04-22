@@ -28,8 +28,8 @@ class DrawerMain extends StatefulWidget {
 }
 
 class _DrawerMainState extends State<DrawerMain> {
-  final List<String> texts = <String>['Main', 'Page1', 'Page2'];
   final List<bool> isHighlighted = [true, false, false];
+  final List<String> texts = <String>['Main', 'Page1', 'Page2'];
 
   @override
   Widget build(BuildContext context) {
@@ -91,18 +91,16 @@ class _DrawerMainState extends State<DrawerMain> {
             ),
           ),
           DrawerListItem(
-              icon: Icons.local_grocery_store,
-              text: 'Chat App',
-              routeName: '/chat'),
+              icon: Icons.maps_ugc, text: 'Chat UI', routeName: '/chat'),
           DrawerListItem(
               icon: Icons.local_grocery_store,
-              text: 'Ecommerce',
+              text: 'Ecommerce UI',
               routeName: '/ecommerce'),
           DrawerListItem(
-              icon: Icons.qr_code, text: 'Qr Codes', routeName: '/qr'),
+              icon: Icons.qr_code, text: 'Qr Code UI', routeName: '/qr'),
           DrawerListItem(
-            icon: Icons.directions_bike,
-            text: 'Uber Clone',
+            icon: Icons.map_outlined,
+            text: 'Maps UI',
             routeName: '/uber',
             withFunc: true,
             onTap: () async {},
@@ -112,42 +110,48 @@ class _DrawerMainState extends State<DrawerMain> {
               text: 'Zoom Clone',
               routeName: '/zoom_clone'),
           DrawerListItem(
-              icon: Icons.person,
-              text: 'Instagram Clone',
-              routeName: '/social'),
+              icon: Icons.person, text: 'Social UI', routeName: '/social'),
           DrawerListItem(
               icon: Icons.food_bank_rounded,
-              text: 'Food Panda Clone',
+              text: 'Food ordering UI',
               routeName: '/resto'),
+          // DrawerListItem(
+          //     icon: Icons.login,
+          //     text: 'Pretty Login Design',
+          //     routeName: '/login'),
+          // DrawerListItem(
+          //     icon: Icons.view_carousel_rounded,
+          //     text: 'Carousel Designs',
+          //     routeName: '/carousel_demo'),
+          // DrawerListItem(
+          //   icon: Icons.home,
+          //   text: 'Home Page',
+          //   routeName: '/home',
+          //   withFunc: true,
+          //   onTap: () {
+          //     mainBloc.firebaseOnMessage();
+          //   },
+          // ),
+          // DrawerListItem(
+          //   icon: Icons.folder,
+          //   text: 'Page 1',
+          //   routeName: '/page1',
+          //   withFunc: true,
+          //   onTap: () {
+          //     mainBloc.sendPushMessage();
+          //     Modular.get<Page1Bloc>().add(Page1EventSummary());
+          //   },
+          // ),
+          // DrawerListItem(
+          //     icon: Icons.folder_rounded, text: 'Page 2', routeName: '/page2'),
+          //
           DrawerListItem(
-              icon: Icons.login,
-              text: 'Pretty Login Design',
-              routeName: '/login'),
+              icon: Icons.info_sharp, text: 'About Kurt', routeName: '/about'),
           DrawerListItem(
-              icon: Icons.view_carousel_rounded,
-              text: 'Carousel Designs',
-              routeName: '/carousel_demo'),
-          DrawerListItem(
-            icon: Icons.home,
-            text: 'Home Page',
-            routeName: '/home',
-            withFunc: true,
-            onTap: () {
-              mainBloc.firebaseOnMessage();
-            },
-          ),
-          DrawerListItem(
-            icon: Icons.folder,
-            text: 'Page 1',
-            routeName: '/page1',
-            withFunc: true,
-            onTap: () {
-              mainBloc.sendPushMessage();
-              Modular.get<Page1Bloc>().add(Page1EventSummary());
-            },
-          ),
-          DrawerListItem(
-              icon: Icons.folder_rounded, text: 'Page 2', routeName: '/page2'),
+              icon: Icons.contact_phone_rounded,
+              text: 'Contact Kurt',
+              routeName: '/contact'),
+
           ListTile(
             title: Row(
               children: <Widget>[
@@ -161,6 +165,8 @@ class _DrawerMainState extends State<DrawerMain> {
               confirmDialogUtil(
                   context, ['Logout', 'Are you sure you want to logout?'], () {
                 Navigator.pop(context);
+                Navigator.pop(context);
+                // Navigator.of(context, rootNavigator: true).pop();
                 uberUserBloc.isLoaded = false;
                 auth.signOut();
               });

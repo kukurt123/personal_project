@@ -32,14 +32,14 @@ class _ZoomHomeState extends State<ZoomHome> {
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.video_camera),
         title: ("Video Call"),
-        activeColor: CupertinoColors.activeBlue,
-        inactiveColor: CupertinoColors.systemGrey,
+        // activeColor: CupertinoColors.activeBlue,
+        // inactiveColor: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.person_add_solid),
         title: ("Profile"),
-        activeColor: CupertinoColors.activeBlue,
-        inactiveColor: CupertinoColors.systemGrey,
+        // activeColor: CupertinoColors.activeBlue,
+        // inactiveColor: CupertinoColors.systemGrey,
       ),
     ];
   }

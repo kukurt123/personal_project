@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+// import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/qr_bloc.dart';
 import 'package:new_practice/models/qr/requestqr.dart';
@@ -18,7 +18,7 @@ class QrList extends StatefulWidget {
 }
 
 class _QrListState extends State<QrList> {
-  final GlobalKey<FormBuilderState> keyy = GlobalKey<FormBuilderState>();
+  // final GlobalKey<FormBuilderState> keyy = GlobalKey<FormBuilderState>();
   final data = Modular.get<QrBloc>();
   // final firestoreQr = Modular.get<FirestoreQr>();
 

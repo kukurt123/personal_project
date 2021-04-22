@@ -46,7 +46,7 @@ class EcommerceMainState extends State<EcommerceMain> {
               centerTitle: false,
               // titlePadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
               title: Text(
-                "Fruits and vegetables",
+                "Ecommerce UI",
                 style: TextStyle1(size: 2.5.h, color: Colors.white),
               ),
             ),
