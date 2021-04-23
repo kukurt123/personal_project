@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -36,8 +37,7 @@ class _UserHomeState extends State<UserHome> {
   void initState() {
     super.initState();
     print('init state???');
-
-    // userHomeBloc.isDoneLoading.add(false);
+    BotToast.showLoading(duration: Duration(seconds: 3));
   }
 
   final userHomeBloc = Modular.get<UserHomeBloc>();
@@ -47,55 +47,47 @@ class _UserHomeState extends State<UserHome> {
   @override
   Widget build(BuildContext context) {
     userHomeBloc.cont = context;
-
-    // var height = MediaQuery.of(context).size.height;
-    // var width = MediaQuery.of(context).size.width;
-    return loadingUtil.widgetLoading(
-      Scaffold(
-        body: StreamBuilder(
-            stream: userHomeBloc.getStreams$(),
-            builder: (context, snapshot) {
-              if (userHomeBloc.markers.values != null) {
-                userHomeBloc.populateMarkersPolylines();
-                return Stack(
-                  children: [
-                    StreamBuilder<bool>(
-                        stream: userHomeBloc.isDoneLoading.stream,
-                        builder: (context, snapshot) {
-                          return _googleMap(
-                              userHomeBloc.circleValues,
-                              userHomeBloc.markerValues,
-                              userHomeBloc.polylineValues);
-                        }),
-                    Positioned(
-                      width: MediaQuery.of(context).size.width,
-                      top: 0,
-                      child: SlideInDown(
-                        delay: Duration(seconds: 5),
-                        animate: true,
-                        child: userHomeBloc.locations.isEmpty
-                            ? SizedBox(width: 20)
-                            : UserHomeCarousel(),
-                      ),
+    return Scaffold(
+      body: StreamBuilder(
+          stream: userHomeBloc.getStreams$(),
+          builder: (context, snapshot) {
+            if (userHomeBloc.markers.values != null) {
+              userHomeBloc.populateMarkersPolylines();
+              return Stack(
+                children: [
+                  StreamBuilder<bool>(
+                      stream: userHomeBloc.isDoneLoading.stream,
+                      builder: (context, snapshot) {
+                        return _googleMap(
+                            userHomeBloc.circleValues,
+                            userHomeBloc.markerValues,
+                            userHomeBloc.polylineValues);
+                      }),
+                  Positioned(
+                    width: MediaQuery.of(context).size.width,
+                    top: 0,
+                    child: SlideInDown(
+                      delay: Duration(seconds: 5),
+                      animate: true,
+                      child: userHomeBloc.locations.isEmpty
+                          ? SizedBox(width: 20)
+                          : UserHomeCarousel(),
                     ),
-                    Positioned(
-                      width: MediaQuery.of(context).size.width,
-                      // height: 100,
-                      bottom: 0,
-                      child: Container(
-                          height: 50,
-                          // height: 50,
-                          // width: double.infinity,
-                          child: Center(
-                              child:
-                                  _listViewButtons(userHomeBloc.markerValues))),
-                    )
-                  ],
-                );
-              }
-              return Center(child: CircularProgressIndicator());
-            }),
-      ),
+                  ),
+                  Positioned(
+                    width: MediaQuery.of(context).size.width,
+                    bottom: 0,
+                    child: Container(
+                        height: 50,
+                        child: Center(
+                            child:
+                                _listViewButtons(userHomeBloc.markerValues))),
+                  )
+                ],
+              );
+            }
+            return Center(child: CircularProgressIndicator());
+          }),
     );
   }
 
@@ -122,7 +114,35 @@ class _UserHomeState extends State<UserHome> {
       markers: Set<Marker>.of(markers.values),
       polylines: Set<Polyline>.of(polyline.values),
       onMapCreated: (GoogleMapController controller) async {
-        print('onMapCreated');
+        showDialog(
+            useSafeArea: false,
+            context: context,
+            child: Center(
+                child: Container(
+              height: 100,
+              alignment: Alignment.center,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: RichText(
+                    text: TextSpan(
+                        text:
+                            'Click your desired location in the map and click the',
+                        style: TextStyle(color: Colors.black),
+                        children: [
+                          TextSpan(
+                              text: '  +  ',
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text: 'button below to save the location',
+                              style: TextStyle(color: Colors.black))
+                        ]),
+                  ),
+                ),
+              ),
+            )));
         userHomeBloc.mapController = controller;
         if (!userHomeBloc.controllerGoogleMap.isCompleted) {
           userHomeBloc.controllerGoogleMap.complete(controller);
@@ -204,7 +224,7 @@ class _UserHomeState extends State<UserHome> {
             color: Colors.black54,
             child: Icon(
               Icons.add_circle,
-              color: Colors.white,
+              color: Colors.green,
             ),
             onPressed: () {
               _showButtonSheet();
@@ -231,7 +251,7 @@ class _UserHomeState extends State<UserHome> {
                 onChanged: () {},
                 child: Column(
                   children: [
-                    Text('place of the pointed coordinates',
+                    Text('Save Location',
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold)),
                     SizedBox(
@@ -241,7 +261,7 @@ class _UserHomeState extends State<UserHome> {
                       controller: nameController,
                       name: 'name',
                       decoration: InputDecoration(
-                          labelText: 'Place', icon: Icon(Icons.person)),
+                          labelText: 'Place', icon: Icon(Icons.place)),
                     ),
                     SizedBox(
                       height: 3.0.h,
@@ -251,7 +271,7 @@ class _UserHomeState extends State<UserHome> {
                       name: 'request',
                       decoration: InputDecoration(
                           labelText: 'Additional Info.',
-                          icon: Icon(Icons.medical_services_outlined)),
+                          icon: Icon(Icons.info)),
                     ),
                     SizedBox(
                       height: 3.0.h,
@@ -265,6 +285,7 @@ class _UserHomeState extends State<UserHome> {
                   ],
                 ),
               ),
+              Text('Select Image:', style: TextStyle(color: Colors.grey)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -272,8 +293,8 @@ class _UserHomeState extends State<UserHome> {
                     onPressed: () async {
                       await userHomeBloc.pickImage(isCamera: false);
                     },
-                    splashRadius: 50,
-                    iconSize: 70,
+                    splashRadius: 30,
+                    iconSize: 40,
                     padding: EdgeInsets.all(30),
                     icon: Icon(
                       Icons.image_outlined,
@@ -287,8 +308,8 @@ class _UserHomeState extends State<UserHome> {
                     onPressed: () async {
                       await userHomeBloc.pickImage(isCamera: true);
                     },
-                    splashRadius: 50,
-                    iconSize: 70,
+                    splashRadius: 30,
+                    iconSize: 40,
                     padding: EdgeInsets.all(30),
                     icon: Icon(
                       Icons.camera_alt_outlined,
@@ -341,7 +362,12 @@ class _UserHomeState extends State<UserHome> {
                       // highlightColor: Colors.amber,
 
                       onTap: () async {
-                        if (userHomeBloc.file.value == null) {
+                        if (userHomeBloc.file.value == null ||
+                            nameController.text.isEmpty ||
+                            requestController.text.isEmpty) {
+                          BotToast.showText(
+                            text: 'Please fill up all fields',
+                          );
                           return;
                         }
                         String id = Uuid().v4();
@@ -359,13 +385,18 @@ class _UserHomeState extends State<UserHome> {
                             folderName: 'uberLocations',
                             file: userHomeBloc.file.value,
                             imageName: id);
+                        BotToast.showText(
+                          text: 'Location Saved!',
+                        );
+                        userHomeBloc.file.add(null);
+                        Navigator.pop(context);
                       },
                       child: Container(
                         // color: Theme.of(context).primaryColor,
                         height: 50,
                         child: Center(
                           child: Text(
-                            "Send Data",
+                            "Submit",
                             style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,

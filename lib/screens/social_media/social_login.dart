@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -24,8 +25,7 @@ class SocialLogin extends StatelessWidget {
             splashColor: Colors.blue[900],
             // highlightColor: Colors.amber,
             onTap: () {
-              print('test');
-              // Modular.link.pushReplacementNamed('/home');
+              BotToast.showText(text: "I'm a dummy button");
             },
             child: Container(
               // color: Theme.of(context).primaryColor,
@@ -82,7 +82,6 @@ class SocialLogin extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10)),
                     onPressed: () {
                       print('navigate to home...');
-                      mainBloc.changeUser(user: currentUser2);
                       Modular.link.pushReplacementNamed('/home');
                     },
                     color: Theme.of(context).primaryColor,

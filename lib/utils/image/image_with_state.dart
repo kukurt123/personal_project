@@ -48,7 +48,6 @@ class ImageWithState extends StatelessWidget {
                   //return null;
                   //return state.completedWidget;
                   case LoadState.completed:
-                    print('state: ${state.extendedImageInfo.image.toString()}');
                     // _controller.forward();
                     return ExtendedRawImage(
                       image: state.extendedImageInfo?.image,
@@ -93,55 +92,3 @@ class ImageWithState extends StatelessWidget {
         });
   }
 }
-
-// switch (state.extendedImageLoadState) {
-//   case LoadState.loading:
-//     _controller.reset();
-//     return Image.asset(
-//       "assets/loading.gif",
-//       fit: BoxFit.fill,
-//     );
-//     break;
-
-//   ///if you don't want override completed widget
-//   ///please return null or state.completedWidget
-//   //return null;
-//   //return state.completedWidget;
-//   case LoadState.completed:
-//     _controller.forward();
-//     return FadeTransition(
-//       opacity: _controller,
-//       child: ExtendedRawImage(
-//         image: state.extendedImageInfo?.image,
-//         width: width,
-//         height: height,
-//       ),
-//     );
-//     break;
-//   case LoadState.failed:
-//     _controller.reset();
-//     return GestureDetector(
-//       child: Stack(
-//         fit: StackFit.expand,
-//         children: <Widget>[
-//           // Image.asset(
-//           //   "assets/failed.jpg",
-//           //   fit: BoxFit.fill,
-//           // ),
-//           Positioned(
-//             bottom: 0.0,
-//             left: 0.0,
-//             right: 0.0,
-//             child: Text(
-//               "load image failed, click to reload",
-//               textAlign: TextAlign.center,
-//             ),
-//           )
-//         ],
-//       ),
-//       onTap: () {
-//         state.reLoadImage();
-//       },
-//     );
-//     break;
-// }

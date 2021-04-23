@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -134,6 +135,13 @@ class _MeetingJoinState extends State<MeetingJoin> {
             shape: StadiumBorder(),
             textColor: Colors.white,
             onPressed: () {
+              if (currentText.length < 6) {
+                BotToast.showText(
+                  text: '6 code missing',
+                );
+
+                return;
+              }
               zoomBloc.joinMeeting();
             },
             child: Container(

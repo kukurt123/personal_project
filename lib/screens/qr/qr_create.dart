@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -34,7 +35,8 @@ class _QrCreateState extends State<QrCreate> {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text('REQUEST PAGE', style: TextStyle1(size: 25, isBold: true)),
+              Text('Send your medical request',
+                  style: TextStyle1(size: 25, isBold: true)),
               FormBuilder(
                 key: keyy,
                 onChanged: () {},
@@ -61,6 +63,7 @@ class _QrCreateState extends State<QrCreate> {
                     ),
                     FormBuilderTextField(
                       controller: paymentController,
+                      keyboardType: TextInputType.number,
                       name: 'payment',
                       decoration: InputDecoration(
                           labelText: 'Payment', icon: Icon(Icons.money)),
@@ -73,20 +76,18 @@ class _QrCreateState extends State<QrCreate> {
                 shape: StadiumBorder(),
                 textColor: Colors.white,
                 onPressed: () async {
-                  print('start');
+                  if (nameController.text.isEmpty ||
+                      paymentController.text.isEmpty ||
+                      requestController.text.isEmpty) {
+                    return BotToast.showText(text: 'Fill up all fields');
+                  }
                   final qr = new RequestQr(
                       id: docIdFromCurrentDate(),
                       name: nameController.text,
                       payment: int.parse(paymentController.text),
                       request: requestController.text);
-                  print(qr.toString());
                   await widget.firestoreQr.setJob(qr);
                   keyy.currentState.reset();
-                  print('done');
-                  // data.pood.add(widget.foods.copyWith.call(
-                  //     name: keyy.currentState.fields['name']?.value,
-                  //     price: 200.0));
-                  // print('changing....' + data.pood.value.name);
                 },
                 child: Container(
                   child: Text('SUBMIT', style: TextStyle(fontSize: 15.0)),

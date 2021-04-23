@@ -7,7 +7,6 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
 import 'package:new_practice/models/uber_model/users.dart';
-import 'package:new_practice/services/login_services/firebase/firebase_chat.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_user.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
@@ -61,9 +60,28 @@ class AuthService {
         uid: user.uid, displayName: user.displayName, photoUrl: user.photoURL);
     // firebaseChat.uploadImage();
     // asink() async {
+    //
     firebaseUsers.setUser(users);
     return users;
   }
+
+// SocialUser currentUser2() {
+//     return SocialUser(
+//   profileImageUrl: 'assets/images/user1.jpg',
+//   backgroundImageUrl: 'assets/images/post1.jpg',
+//   name: 'Kurt Ruzelll Estacion',
+//   following: 2000,
+//   followers: 23498,
+//   posts: [
+//     _post5,
+//     _post4,
+//     _post3,
+//     _post2,
+//   ],
+//   favorites: [_post1, _post0],
+// );
+
+// }
 
   downloadProfileImage(User user) async {
     await mainBloc

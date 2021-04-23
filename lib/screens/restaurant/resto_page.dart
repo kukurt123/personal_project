@@ -4,7 +4,6 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/mock_data/restaurant_data.dart';
 import 'package:new_practice/models/restaurant.dart';
 import 'package:new_practice/screens/restaurant/resto_list.dart';
-import 'package:new_practice/screens/restaurant/resto_details.dart';
 import 'package:new_practice/widgets/search_bar_resto.dart';
 
 class RestoPage extends StatefulWidget {
@@ -18,71 +17,68 @@ class RestoPageState extends State<RestoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              elevation: 10.0,
-              expandedHeight: 50.0,
-              floating: true,
-              pinned: false,
-              snap: true,
-              leading: IconButton(
-                  icon: Icon(Icons.account_circle),
-                  iconSize: 30.0,
-                  onPressed: () {}),
-              backgroundColor: Colors.deepOrange,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text("Restaurants"),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(
-                    'Cart (${currentUser.cart.length})',
-                    style: TextStyle(color: Colors.white, fontSize: 20.0),
-                  ),
-                  onPressed: () {
-                    Modular.link.pushNamed('/cart');
-                  },
-                )
-              ],
-            )
-          ];
-        },
-        body: ListView(
-          physics: BouncingScrollPhysics(),
-          children: <Widget>[
-            SearchForm(),
-            RecentOrders(),
-            // RestoList(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Nearby Restaurants',
-                    style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.2),
-                  ),
+      body: Container(
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                elevation: 10.0,
+                expandedHeight: 50.0,
+                floating: true,
+                pinned: false,
+                snap: true,
+                leading: IconButton(
+                    icon: Icon(Icons.account_circle),
+                    iconSize: 30.0,
+                    onPressed: () {}),
+                backgroundColor: Colors.deepOrange,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: Text("Restaurants"),
                 ),
-                _buildRestaurants(context),
-              ],
-            ),
-            InkWell(
-              onTap: () {
-                // Navigator.pop(context);
-                Modular.to.pushReplacementNamed('/home');
-              },
-              child: Container(
-                height: 100,
-                child: Center(child: Text('Main Menu')),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text(
+                      'Cart (${currentUser.cart.length})',
+                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+                    ),
+                    onPressed: () {
+                      Modular.link.pushNamed('/cart');
+                    },
+                  )
+                ],
+              )
+            ];
+          },
+          body: Stack(
+            fit: StackFit.loose,
+            children: [
+              ListView(
+                physics: BouncingScrollPhysics(),
+                children: <Widget>[
+                  SearchForm(),
+                  RecentOrders(),
+                  // RestoList(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(
+                          'Nearby Restaurants',
+                          style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1.2),
+                        ),
+                      ),
+                      _buildRestaurants(context),
+                    ],
+                  ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

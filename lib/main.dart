@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -76,8 +77,15 @@ class AppWidget extends StatelessWidget {
                     path: 'assets/images/splash.png',
                   ));
                 } else {
+                  final botToastBuilder = BotToastInit();
                   return MaterialApp(
-                    builder: loadingUtil.easyLoadingInit(),
+                    // builder:
+                    builder: (context, child) {
+                      // child = loadingUtil.easyLoadingInit();
+                      child = botToastBuilder(context, child);
+                      return child;
+                    },
+                    navigatorObservers: [BotToastNavigatorObserver()],
                     initialRoute: true != false ? "/main" : "/main",
                     navigatorKey: Modular.navigatorKey,
                     onGenerateRoute: Modular.generateRoute,

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
+import 'package:new_practice/utils/image/image_url_as_future.dart';
+import 'package:new_practice/utils/image/image_with_state.dart';
 import 'package:new_practice/widgets/carousel_animation.dart';
 import 'package:new_practice/widgets/clip_paths/profile_clipper.dart';
 
@@ -42,26 +44,49 @@ class SocialProfile extends StatelessWidget {
                 ),
                 Positioned(
                     bottom: 1,
-                    right: 200,
+                    right: MediaQuery.of(context).size.width * 0.50,
                     child: Container(
-                      height: 100,
-                      width: 100,
+                      height: 80,
+                      width: 80,
+                      child: GestureDetector(
+                        onTap: () {
+                          Modular.link.pushNamed('social/profile');
+                        },
+                      ),
                       decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              offset: Offset(0, 2),
-                              blurRadius: 6.0,
-                            ),
-                          ],
-                          border: Border.all(
-                              width: 2, color: Theme.of(context).primaryColor),
-                          shape: BoxShape.circle,
                           image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: AssetImage(
-                                  data.currentUser.value.profileImageUrl))),
+                              image: NetworkImage(
+                                  data.currentUser.value.profileImageUrl)),
+                          border: Border.all(width: 2, color: Colors.white),
+                          shape: BoxShape.circle),
                     ))
+                // Container(
+                // height: 100,
+                // width: 100,
+                // child: ImageWithState(
+                //   futureUrl: imageUrlAsFuture(
+                //       data.currentUser.value.profileImageUrl),
+                //   boxShape: BoxShape.circle,
+                //   height: 50,
+                //   width: 50,
+                // ),
+
+                // BoxDecoration(
+                //     boxShadow: [
+                //       BoxShadow(
+                //         color: Colors.black26,
+                //         offset: Offset(0, 2),
+                //         blurRadius: 6.0,
+                //       ),
+                //     ],
+                //     border: Border.all(
+                //         width: 2, color: Theme.of(context).primaryColor),
+                //     shape: BoxShape.circle,
+                //     image: DecorationImage(
+                //         fit: BoxFit.cover,
+                //         image: AssetImage(
+                //             data.currentUser.value.profileImageUrl))),
               ],
             ),
             SizedBox(
@@ -71,7 +96,7 @@ class SocialProfile extends StatelessWidget {
               '${data.currentUser.value.name}',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 25,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),

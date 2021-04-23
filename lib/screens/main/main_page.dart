@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
-import 'package:new_practice/bloc/uber_bloc/uber-user_bloc.dart';
-import 'package:new_practice/models/uber_model/users.dart';
 import 'package:new_practice/screens/login/login.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/widgets/extras.dart';
@@ -42,7 +40,7 @@ class _MainPageState extends State<MainPage> {
       drawer: loggedIn == true ? MainDrawer() : null,
       appBar: loggedIn == true
           ? AppBar(
-              title: Text('Home Page'),
+              title: Text(''),
             )
           : null,
       body: StreamBuilder<dynamic>(
@@ -51,15 +49,16 @@ class _MainPageState extends State<MainPage> {
             if (snapshot.connectionState == ConnectionState.active) {
               dynamic user = snapshot.data;
               if (user == null || user.toString().length < 5) {
-                pt('no!');
                 change(value: false);
                 if (mainBloc.openIntro.value == true || firstLogin == true) {
                   return Login();
                 }
                 return MainIntro();
               } else {
+                auth.currentUser().then((x) {
+                  mainBloc.changeUser(x);
+                });
                 // mainBloc.openIntro.add(true);
-                pt('yes! $user');
 
                 return _main(context);
               }

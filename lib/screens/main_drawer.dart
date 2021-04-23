@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_practice/bloc/main_bloc.dart';
-import 'package:new_practice/bloc/page1_1/page1_1_barrel.dart';
 import 'package:new_practice/bloc/uber_bloc/uber-user_bloc.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
-import 'package:new_practice/services/firebase_messaging/firebase_messaging_background_handler.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/utils/alert-dialog/alert-dialogs.dart';
-import 'package:new_practice/utils/loading/loading_util.dart';
-import 'package:new_practice/utils/loading/progress_dialog.dart';
 import 'package:new_practice/widgets/extras.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -51,23 +47,35 @@ class _DrawerMainState extends State<DrawerMain> {
                   return Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     // pt('clicked.... ${Modular.navigator.path} ${Modular.navigatorKey.currentWidget}');
+
+                        //     Modular.link.pushNamed('social/profile');
+                        //   },
+                        //   child: ImageWithState(
+                        //     futureUrl: imageUrlAsFuture(user.profileImageUrl),
+                        //     boxShape: BoxShape.circle,
+                        //     height: 50,
+                        //     width: 50,
+                        //   ),
+                        // ),
                         Container(
-                          height: 100,
-                          width: 100,
+                          height: 80,
+                          width: 80,
                           child: GestureDetector(
                             onTap: () {
-                              print('clicked....');
                               Modular.link.pushNamed('social/profile');
                             },
                           ),
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage(user.profileImageUrl)),
-                              border: Border.all(width: 5, color: Colors.white),
+                                  image: NetworkImage(user.profileImageUrl)),
+                              border: Border.all(width: 2, color: Colors.white),
                               shape: BoxShape.circle),
                         ),
                         SizedBox(
@@ -145,13 +153,12 @@ class _DrawerMainState extends State<DrawerMain> {
           // DrawerListItem(
           //     icon: Icons.folder_rounded, text: 'Page 2', routeName: '/page2'),
           //
-          DrawerListItem(
-              icon: Icons.info_sharp, text: 'About Kurt', routeName: '/about'),
-          DrawerListItem(
-              icon: Icons.contact_phone_rounded,
-              text: 'Contact Kurt',
-              routeName: '/contact'),
-
+          // DrawerListItem(
+          //     icon: Icons.info_sharp, text: 'About Kurt', routeName: '/about'),
+          // DrawerListItem(
+          //     icon: Icons.contact_phone_rounded,
+          //     text: 'Contact Kurt',
+          //     routeName: '/contact'),
           ListTile(
             title: Row(
               children: <Widget>[

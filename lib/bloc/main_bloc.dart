@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io' show File, Platform;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:new_practice/mock_data/social_media.dart';
 import 'package:new_practice/models/social_media/socialuser.dart';
+import 'package:new_practice/models/uber_model/users.dart';
 import 'package:new_practice/services/login_services/firebase/firebase_main.dart';
 import 'package:ntp/ntp.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,8 +18,11 @@ class MainBloc {
   final currentUser = new BehaviorSubject<SocialUser>();
   final openIntro = new BehaviorSubject<bool>.seeded(false);
 
-  changeUser({SocialUser user}) {
-    currentUser.sink.add(user);
+  changeUser(Users user) {
+    var mainuser = currentUser2;
+    mainuser = mainuser.copyWith.call(name: user.displayName);
+    mainuser = mainuser.copyWith.call(profileImageUrl: user.photoUrl);
+    currentUser.sink.add(mainuser);
   }
 
   edit(SocialUser user) {

@@ -7,7 +7,6 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:new_practice/bloc/uber_bloc/user_home_bloc.dart';
 import 'package:new_practice/models/uber/location_model.dart';
 import 'package:new_practice/utils/list/item-list.widget.dart';
-import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
 
 class ChatSearch extends StatelessWidget {
   const ChatSearch({Key key}) : super(key: key);

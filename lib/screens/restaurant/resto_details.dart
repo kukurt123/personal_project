@@ -23,7 +23,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
               Hero(
                 tag: widget.restaurant.imageUrl,
                 child: Image(
-                  height: 350.0,
+                  height: MediaQuery.of(context).size.height * .30,
                   width: MediaQuery.of(context).size.width,
                   image: AssetImage(widget.restaurant.imageUrl),
                   fit: BoxFit.cover,
@@ -62,14 +62,14 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                     Text(
                       widget.restaurant.name,
                       style: TextStyle(
-                        fontSize: 22.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       '0.2 miles away',
                       style: TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 14.0,
                       ),
                     ),
                   ],
@@ -78,7 +78,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                 SizedBox(height: 6.0),
                 Text(
                   widget.restaurant.address,
-                  style: TextStyle(fontSize: 18.0),
+                  style: TextStyle(fontSize: 14.0),
                 ),
               ],
             ),
@@ -96,7 +96,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                   'Reviews',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20.0,
+                    fontSize: 15.0,
                   ),
                 ),
                 onPressed: () {},
@@ -111,7 +111,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                   'Contact',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20.0,
+                    fontSize: 15.0,
                   ),
                 ),
                 onPressed: () {},
