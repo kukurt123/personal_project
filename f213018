@@ -1,0 +1,38 @@
+[33m69e5d27[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: checkout: moving from main to main
+[33m69e5d27[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{1}: checkout: moving from my-website to main
+[33mf213018[m[33m ([m[1;32mmy-website[m[33m)[m HEAD@{2}: checkout: moving from main to my-website
+[33m69e5d27[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{3}: checkout: moving from f213018a195d3666dfcf3e02304ba5d3628d7e06 to main
+[33mf213018[m[33m ([m[1;32mmy-website[m[33m)[m HEAD@{4}: checkout: moving from my-website to f213018
+[33mf213018[m[33m ([m[1;32mmy-website[m[33m)[m HEAD@{5}: checkout: moving from main to my-website
+[33m69e5d27[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{6}: commit: testing
+[33m40eb991[m HEAD@{7}: checkout: moving from main to main
+[33m40eb991[m HEAD@{8}: checkout: moving from main to main
+[33m40eb991[m HEAD@{9}: checkout: moving from main to main
+[33m40eb991[m HEAD@{10}: checkout: moving from my-website to main
+[33mf213018[m[33m ([m[1;32mmy-website[m[33m)[m HEAD@{11}: checkout: moving from my-website to my-website
+[33mf213018[m[33m ([m[1;32mmy-website[m[33m)[m HEAD@{12}: commit: update for production
+[33mccd5e84[m HEAD@{13}: commit: new update for production
+[33m40eb991[m HEAD@{14}: reset: moving to HEAD~
+[33m47f2ac1[m HEAD@{15}: reset: moving to HEAD~1
+[33m10a9779[m HEAD@{16}: commit: updating for production
+[33m47f2ac1[m HEAD@{17}: commit: edit for production
+[33m40eb991[m HEAD@{18}: checkout: moving from main to my-website
+[33m40eb991[m HEAD@{19}: commit: uber update
+[33mf852333[m HEAD@{20}: commit: test
+[33m6decc21[m HEAD@{21}: commit: updating chat
+[33m7611218[m HEAD@{22}: commit: test
+[33m3b601fe[m HEAD@{23}: commit: updating chat app
+[33m9cb83bc[m HEAD@{24}: commit: chat app update
+[33m70f78c0[m HEAD@{25}: commit: ecom update
+[33me34e287[m HEAD@{26}: commit: ecommerce_main fix
+[33mc8160de[m HEAD@{27}: commit: next update
+[33me188df9[m HEAD@{28}: commit: fixing firebase cloud messaging
+[33mf238f00[m HEAD@{29}: commit: updating drawer
+[33m9eff7e4[m HEAD@{30}: commit: finnish map
+[33m830a19a[m HEAD@{31}: commit: fixed bugs from maps
+[33m1247772[m HEAD@{32}: commit: test
+[33m126adb6[m HEAD@{33}: commit: google map update
+[33m9ef751d[m HEAD@{34}: commit: updated the map
+[33m9be6eed[m HEAD@{35}: commit: added addmarker
+[33mb7e7570[m HEAD@{36}: Branch: renamed refs/heads/master to refs/heads/main
+[33mb7e7570[m HEAD@{38}: commit (initial): first commit
