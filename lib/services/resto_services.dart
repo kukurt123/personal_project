@@ -6,7 +6,6 @@ List<String> getRestos(String query) {
     print(z.restaurant.toString());
     matches.add(z.restaurant.toString());
   });
-  // matches.addAll(currentUser.orders.);
 
   matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
   return matches;
