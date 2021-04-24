@@ -9,6 +9,7 @@ import 'package:new_practice/models/uber/location_model.dart';
 import 'package:new_practice/utils/list/item-list.widget.dart';
 import 'package:new_practice/utils/popup_menu/show_modal_bottom.dart';
 
+import '../extras.dart';
 import 'user_home_widgets.dart';
 
 class UberSearchBar extends StatelessWidget {
@@ -47,7 +48,9 @@ Widget buildFloatingSearchBar(BuildContext context) {
     body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: userHomeBloc.places.stream,
         builder: (context, snapshot) {
+          pt('$snapshot');
           return ListItemsBuilder<dynamic>(
+            divided: true,
             snapshot: snapshot,
             itemBuilder: (context, item) => ListTile(
               leading: Icon(Icons.place),
