@@ -1,42 +1,41 @@
 {
   "project_info": {
-    "project_number": "127785569753",
-    "firebase_url": "https://uber-clone-9e24f-default-rtdb.firebaseio.com",
-    "project_id": "uber-clone-9e24f",
-    "storage_bucket": "uber-clone-9e24f.appspot.com"
+    "project_number": "44698837143",
+    "project_id": "personalproject-test",
+    "storage_bucket": "personalproject-test.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:127785569753:android:28586899a7031f49b85dc8",
+        "mobilesdk_app_id": "1:44698837143:android:9514962b38c45ce52349d2",
         "android_client_info": {
-          "package_name": "com.example.newpractice"
+          "package_name": "com.kurt.newpractice"
         }
       },
       "oauth_client": [
         {
-          "client_id": "127785569753-0d1564tqkqdf58vn35gjiln3l3mqq22j.apps.googleusercontent.com",
+          "client_id": "44698837143-tdviduu15eg1u8l76vtnhvnjr50dpgq3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.newpractice",
-            "certificate_hash": "479985f90a0ddb85c7382cdc29915e7dba56e4c4"
+            "package_name": "com.kurt.newpractice",
+            "certificate_hash": "f6bfe40e08bb77509e4aacafd2eda6913ab9411c"
           }
         },
         {
-          "client_id": "127785569753-qao2le4qe851l7gmas52b50tq9k2lbp8.apps.googleusercontent.com",
+          "client_id": "44698837143-2ik3392n8d40eud2j4hak3ijpb5fkrpn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAlF_HU6VvAr4fDkElhSArpTomZkAP6g5A"
+          "current_key": "AIzaSyC10Bqck-MdxmrsfwmoUtqrazsoMg7s2OI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "127785569753-qao2le4qe851l7gmas52b50tq9k2lbp8.apps.googleusercontent.com",
+              "client_id": "44698837143-2ik3392n8d40eud2j4hak3ijpb5fkrpn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
