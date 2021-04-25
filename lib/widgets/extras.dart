@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:logger/logger.dart';
+import 'package:new_practice/utils/time.dart';
 
 class SplashEffect extends StatelessWidget {
   final Widget child;
@@ -54,19 +55,19 @@ class DrawerListItem extends StatelessWidget {
         ],
       ),
       onTap: () async {
-        Navigator.pop(context);
-        if (this.withFunc) {
-          print('with func');
-          this.onTap();
+        setTimeout(() {
+          Navigator.pop(context);
+          if (this.withFunc) {
+            print('with func');
+            this.onTap();
 
-          // setTimeout(() {
+            // setTimeout(() {
 
-          Modular.to.pushNamed('/main/' + this.routeName);
-          // }, 200);
-        } else {
-          Modular.to.pushNamed('/main/' + this.routeName);
-        }
-
+            Modular.to.pushNamed('/main/' + this.routeName);
+          } else {
+            Modular.to.pushNamed('/main/' + this.routeName);
+          }
+        }, 200);
         // if (onTap()) {
         // }
       },

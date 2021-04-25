@@ -123,6 +123,10 @@ class _DrawerMainState extends State<DrawerMain> {
               icon: Icons.food_bank_rounded,
               text: 'Food ordering UI',
               routeName: '/resto'),
+          DrawerListItem(
+              icon: Icons.policy_outlined,
+              text: 'Privacy Policy',
+              routeName: '/policy'),
           // DrawerListItem(
           //     icon: Icons.login,
           //     text: 'Pretty Login Design',

@@ -83,12 +83,12 @@ class _LoginState extends State<Login> {
     ];
 
     return LoginFresh(
-      pathLogo: 'assets/images/resto1.jpg',
-      isExploreApp: true,
+      pathLogo: 'assets/images/icon.png',
+      backgroundColor: Theme.of(context).primaryColor,
       functionExploreApp: () {
         // develop what they want the ExploreApp to do when the user clicks
       },
-      isFooter: true,
+      // isFooter: true,
       widgetFooter: this.widgetFooter(),
       typeLoginModel: listLogin,
       isSignUp: true,
@@ -106,8 +106,9 @@ class _LoginState extends State<Login> {
           isRequest(false);
         });
       },
-      logo: 'assets/images/resto1.jpg',
-      isFooter: true,
+      logo: 'assets/images/icon.png',
+      isFooter: false,
+      backgroundColor: Colors.blue,
       widgetFooter: this.widgetFooter(),
       isResetPassword: true,
       widgetResetPassword: this.widgetResetPassword(),
@@ -118,7 +119,7 @@ class _LoginState extends State<Login> {
 
   Widget widgetResetPassword() {
     return LoginFreshResetPassword(
-      logo: 'assets/images/resto1.jpg',
+      logo: 'assets/images/icon.png',
       funResetPassword:
           (BuildContext _context, Function isRequest, String email) {
         isRequest(true);
@@ -127,14 +128,15 @@ class _LoginState extends State<Login> {
           isRequest(false);
         });
       },
-      isFooter: true,
+      isFooter: false,
+      backgroundColor: Colors.white,
       widgetFooter: this.widgetFooter(),
     );
   }
 
   Widget widgetFooter() {
     return LoginFreshFooter(
-      logo: 'assets/images/resto1.jpg',
+      logo: 'assets/images/icon.png',
       text: 'Power by',
       funFooterLogin: () {},
     );
@@ -142,9 +144,10 @@ class _LoginState extends State<Login> {
 
   Widget widgetLoginFreshSignUp() {
     return LoginFreshSignUp(
-        isFooter: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        isFooter: false,
         widgetFooter: this.widgetFooter(),
-        logo: 'assets/images/resto1.jpg',
+        logo: 'assets/images/icon.png',
         funSignUp: (BuildContext _context, Function isRequest,
             SignUpModel signUpModel) {
           isRequest(true);

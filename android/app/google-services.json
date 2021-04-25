@@ -14,11 +14,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "44698837143-tdviduu15eg1u8l76vtnhvnjr50dpgq3.apps.googleusercontent.com",
+          "client_id": "44698837143-o3i2dasu5invfgav75m519d9cld14sag.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kurt.newpractice",
-            "certificate_hash": "f6bfe40e08bb77509e4aacafd2eda6913ab9411c"
+            "certificate_hash": "479985f90a0ddb85c7382cdc29915e7dba56e4c4"
+          }
+        },
+        {
+          "client_id": "44698837143-uddg23kl0nd7lqrkelk2p1se5vmof4hp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kurt.newpractice",
+            "certificate_hash": "b76e86b6b929db5f159532fc01ab3924b869fc4a"
           }
         },
         {

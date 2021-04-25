@@ -15,6 +15,7 @@ import 'package:new_practice/screens/main/main_intro.dart';
 import 'package:new_practice/screens/main/main_page.dart';
 import 'package:new_practice/screens/login/login.dart';
 import 'package:new_practice/screens/page2.dart';
+import 'package:new_practice/screens/policy/policy.dart';
 import 'package:new_practice/screens/uber/login/sign-in-manager.dart';
 import 'package:new_practice/services/login_services/auth/auth.dart';
 import 'package:new_practice/utils/loading/loading_util.dart';
@@ -75,6 +76,7 @@ class MainRouting extends ChildModule {
         ModularRouter('/qr', module: QrModule()),
         ModularRouter('/ecommerce', module: EcommerceModule()),
         ModularRouter('chat', module: ChatModule()),
+        ModularRouter('policy', child: (_, __) => Policy()),
       ];
 
   static Inject get to => Inject<MainModule>.of();
